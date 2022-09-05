@@ -46,12 +46,12 @@ fi
 pushd $TEMP_DIR
 
 log "CYAN" "Installing the needed kcp tools"
-hw=darwin
+HW=darwin
 KCP_VERSION=0.8.0
-wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kcp_${KCP_VERSION}_${hw}_amd64.tar.gz"
-wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kubectl-kcp-plugin_${KCP_VERSION}_${hw}_amd64.tar.gz"
-tar -vxf kcp_${KCP_VERSION}_${hw}_amd64.tar.gz
-tar -vxf kubectl-kcp-plugin_${KCP_VERSION}_${hw}_amd64.tar.gz
+wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kcp_${KCP_VERSION}_${HW}_amd64.tar.gz"
+wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kubectl-kcp-plugin_${KCP_VERSION}_${HW}_amd64.tar.gz"
+tar -vxf kcp_${KCP_VERSION}_${HW}_amd64.tar.gz
+tar -vxf kubectl-kcp-plugin_${KCP_VERSION}_${HW}_amd64.tar.gz
 cp bin/kubectl-* /usr/local/bin
 
 log "CYAN" "Starting the kcp server"

@@ -42,6 +42,7 @@ log() {
 KCP_VERSION=0.8.0
 
 log "CYAN" "Creating a kind cluster"
+rm $HOME/.kube/config || true
 kind delete cluster
 kind create cluster
 
@@ -52,9 +53,12 @@ log "CYAN" "Create a kcp my-org workspace"
 KUBECONFIG=.kcp/admin.kubeconfig k kcp workspace create my-org --enter
 log "CYAN" "Sync kcp with kind API resources"
 KUBECONFIG=.kcp/admin.kubeconfig k kcp workload sync kind --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-kind.yml
-k apply -f "syncer-kind.yml"
+log "CYAN" "Deploy kcp syncer on kind"
+KUBECONFIG=$HOME/.kube/config k apply -f "syncer-kind.yml"
 
-sleep 5
+# TODO: Find a way to check if sync finished
+sleep 60
+
 log "CYAN" "Create a kuard app"
 KUBECONFIG=.kcp/admin.kubeconfig k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue
 KUBECONFIG=.kcp/admin.kubeconfig k rollout status deployment/kuard
