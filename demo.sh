@@ -40,12 +40,13 @@ log() {
 }
 
 KCP_VERSION=0.8.0
-TEMP_DIR="_tmp"
-pushd $TEMP_DIR
 
 log "CYAN" "Creating a kind cluster"
 kind delete cluster
 kind create cluster
+
+TEMP_DIR="_tmp"
+pushd $TEMP_DIR
 
 log "CYAN" "Create a kcp my-org workspace"
 KUBECONFIG=.kcp/admin.kubeconfig k kcp workspace create my-org --enter

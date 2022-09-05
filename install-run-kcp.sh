@@ -38,7 +38,7 @@ log() {
 
 TEMP_DIR="_tmp"
 
-log "CYAN" "Create temp directory "
+log "CYAN" "Create temp directory"
 if [ ! -d $TEMP_DIR ]; then
     mkdir -p $TEMP_DIR
 fi
