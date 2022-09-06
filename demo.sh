@@ -39,10 +39,18 @@ log() {
   echo; generate_eyecatcher ${1} '#'; log_msg ${1} ${MSG}; generate_eyecatcher ${1} '#'; echo
 }
 
+# Global variables
 KCP_VERSION=0.8.0
 KCP_WORKSPACE=my-org
 KCP_KUBE_CFG_PATH=.kcp/admin.kubeconfig
 CLUSTER_NAME=kind
+
+if ! command -v kind &> /dev/null; then
+  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  echo "kind is not installed"
+  echo "Use a package manager (i.e 'brew install kind') or visit the official site https://kind.sigs.k8s.io"
+  exit 1
+fi
 
 log "CYAN" "Creating a kind cluster"
 rm $HOME/.kube/config || true
