@@ -51,7 +51,7 @@ check_cpu() {
   ARCHITECTURE=""
   case $(uname -m) in
       x86_64) ARCHITECTURE="amd64" ;;
-      arm)    ARCHITECTURE="arm64" ;;
+      arm*)    ARCHITECTURE="arm64" ;;
   esac
 }
 
