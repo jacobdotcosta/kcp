@@ -5,9 +5,20 @@ Next, you can create workspaces and start to setup logical clusters that kcp wil
 
 ## How to play with kcp
 
-Launch the kcp control plane using the bash script `./kcp.sh`.
+Launch the kcp control plane using the bash script `./kcp.sh` and action flag.
+```bash
+./kcp.sh --action start
+```
+**Note**: To stop it, `./kcp.sh --action stop`
 
-**Note**: If kcp is not installed like the kubectl kcp plugins, then they will be installed
+If kcp is not installed like the kubectl kcp plugins, then they could be installed using the action flag `install`
+```bash
+./kcp.sh --action install
+```
+To clean up what it has been installed
+```bash
+./kcp.sh --action clean
+```
 
 Next, in a second terminal, you can run the `./demo.sh` script.
 

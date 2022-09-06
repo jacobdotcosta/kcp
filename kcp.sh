@@ -12,28 +12,49 @@ MAGENTA='\033[0;35m'
 CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 
-newline=$'\n'
+HELP_CONTENT="
+Usage: kcp.sh [OPTIONS]
+Options:
+[Global Mandatory Flags]
+  --action: What action to take ?
+    \"install\" : Install the kcp server locally and kcp kubectl plugins
+    \"start\"   : Start the kcp server
+    \"stop\"    : Stop the kcp server
+    \"clean\"   : Clean up the temp directory and remove the kcp plugins
 
-generate_eyecatcher(){
+[Global Optional Flags]
+  --help: Show this help menu
+"
+
+####################################
+## Section to declare the functions
+####################################
+repeat_char(){
   COLOR=${1}
-	for i in {1..50}; do echo -ne "${!COLOR}$2${NC}"; done
+	for i in {1..70}; do echo -ne "${!COLOR}$2${NC}"; done
 }
 
-log_msg() {
+msg() {
   COLOR=${1}
   MSG="${@:2}"
   echo -e "\n${!COLOR}## ${MSG}${NC}"
 }
 
-log_line() {
-  COLOR=${1}
-  MSG="${@:2}"
-  echo -e "${!COLOR}## ${MSG}${NC}"
+note() {
+  echo -e "\n${BLUE}NOTE:${NC} $1"
+}
+
+warn() {
+  echo -e "\n${YELLOW}WARN:${NC} $1"
+}
+
+fixme() {
+  echo -e "\n${RED}FIXME:${NC} $1"
 }
 
 log() {
   MSG="${@:2}"
-  echo; generate_eyecatcher ${1} '#'; log_msg ${1} ${MSG}; generate_eyecatcher ${1} '#'; echo
+  echo; repeat_char ${1} '#'; msg ${1} ${MSG}; repeat_char ${1} '#'; echo
 }
 
 check_os() {
@@ -44,47 +65,109 @@ check_os() {
   elif [[ "$unamestr" == 'Darwin' ]]; then
      PLATFORM='darwin'
   fi
-  log "CYAN" "OS type: $PLATFORM"
+  note "OS type: $PLATFORM"
 }
 
 check_cpu() {
   ARCHITECTURE=""
   case $(uname -m) in
       x86_64) ARCHITECTURE="amd64" ;;
-      arm*)    ARCHITECTURE="arm64" ;;
+      arm*)   ARCHITECTURE="arm64" ;;
   esac
 }
 
-# Global variables
-TEMP_DIR="_tmp"
-KCP_VERSION=0.8.0
+############################################################################
+## Check if flags are passed and set the variables using the flogs passed
+############################################################################
+if [[ $# == 0 ]]; then
+  fixme "No Flags were passed. Run with --help flag to get usage information"
+  exit 1
+fi
+
+while test $# -gt 0; do
+  case "$1" in
+     -a | --action)
+      shift
+      action=$1
+      shift;;
+     -h | --help)
+      echo "$HELP_CONTENT"
+      exit 1;;
+    *)
+      fixme "$1 is note a recognized flag!"
+      exit 1
+      ;;
+  esac
+done
+
+#######################################################
+## Set default values when no optional flags are passed
+#######################################################
+: ${TEMP_DIR:="_tmp"}
+: ${KCP_VERSION=0.8.0}
+
+#######################################################
+## Set local default values
+#######################################################
 
 # Check OS and cpu
 check_os
 check_cpu
 
-log "CYAN" "Create temp directory"
+note "Create temp directory"
 if [ ! -d $TEMP_DIR ]; then
     mkdir -p $TEMP_DIR
 fi
 
 pushd $TEMP_DIR
 
-log "CYAN" "Check if kcp is installed"
-if [ -f "./bin/kcp" ]; then
-  log "CYAN" "kcp is already installed"
-else
-  log "CYAN" "Installing the needed kcp tools"
-  wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kcp_${KCP_VERSION}_${PLATFORM}_${ARCHITECTURE}.tar.gz"
-  wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kubectl-kcp-plugin_${KCP_VERSION}_${PLATFORM}_${ARCHITECTURE}.tar.gz"
-  tar -vxf kcp_${KCP_VERSION}_${PLATFORM}_${ARCHITECTURE}.tar.gz
-  tar -vxf kubectl-kcp-plugin_${KCP_VERSION}_${PLATFORM}_${ARCHITECTURE}.tar.gz
-  cp bin/kubectl-* /usr/local/bin
+# Validate that an action was passed
+if ! [[ $action ]]; then
+  fixme "Please pass a valid action using the flag (e.g. --action create)"
+  exit 1
 fi
 
-log "CYAN" "Remove previously files created"
-rm -rf .kcp
+# Actions to executed
+case $action in
+  install)
+    note "Check if kcp is installed"
+    if [ -f "./bin/kcp" ]; then
+      warn "kcp is already installed"
+    else
+      note "Installing the needed kcp tools"
+      wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kcp_${KCP_VERSION}_${PLATFORM}_${ARCHITECTURE}.tar.gz"
+      wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kubectl-kcp-plugin_${KCP_VERSION}_${PLATFORM}_${ARCHITECTURE}.tar.gz"
+      tar -vxf kcp_${KCP_VERSION}_${PLATFORM}_${ARCHITECTURE}.tar.gz
+      tar -vxf kubectl-kcp-plugin_${KCP_VERSION}_${PLATFORM}_${ARCHITECTURE}.tar.gz
+      cp bin/kubectl-* /usr/local/bin
+    fi
+    ;;
+  start)
+    note "Remove previously files created"
+    rm -rf .kcp
 
-log "CYAN" "Starting the kcp server"
-./bin/kcp start
+    if [ -f "./bin/kcp" ]; then
+      note "Starting the kcp server"
+      ./bin/kcp start &
+    else
+       warn "kcp is not installed !!"
+    fi
+    ;;
+  stop)
+    note "Stopping kcp..."
+    pkill kcp
+    ;;
+  clean)
+    note "Stopping kcp..."
+    pkill kcp || true
+    note "Removing kubectl kcp plugins"
+    rm /usr/local/bin/kubectl-{kcp,ws,workspaces}
+    note "Deleting temp directory content"
+    rm -r *
+    ;;
+   *)
+    fixme "Unknown action passed: $action. Please use --help."
+    exit 1
+esac
+
 popd
