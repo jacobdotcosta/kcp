@@ -47,12 +47,21 @@ check_os() {
   log "CYAN" "OS type: $PLATFORM"
 }
 
+check_cpu() {
+  ARCHITECTURE=""
+  case $(uname -m) in
+      x86_64) ARCHITECTURE="amd64" ;;
+      arm)    ARCHITECTURE="arm64" ;;
+  esac
+}
+
 # Global variables
 TEMP_DIR="_tmp"
 KCP_VERSION=0.8.0
 
-# Check OS TYPE and/or linux distro
+# Check OS and cpu
 check_os
+check_cpu
 
 log "CYAN" "Create temp directory"
 if [ ! -d $TEMP_DIR ]; then
@@ -66,10 +75,10 @@ if [ -f "./bin/kcp" ]; then
   log "CYAN" "kcp is already installed"
 else
   log "CYAN" "Installing the needed kcp tools"
-  wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kcp_${KCP_VERSION}_${PLATFORM}_amd64.tar.gz"
-  wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kubectl-kcp-plugin_${KCP_VERSION}_${PLATFORM}_amd64.tar.gz"
-  tar -vxf kcp_${KCP_VERSION}_${PLATFORM}_amd64.tar.gz
-  tar -vxf kubectl-kcp-plugin_${KCP_VERSION}_${PLATFORM}_amd64.tar.gz
+  wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kcp_${KCP_VERSION}_${PLATFORM}_${ARCHITECTURE}.tar.gz"
+  wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kubectl-kcp-plugin_${KCP_VERSION}_${PLATFORM}_${ARCHITECTURE}.tar.gz"
+  tar -vxf kcp_${KCP_VERSION}_${PLATFORM}_${ARCHITECTURE}.tar.gz
+  tar -vxf kubectl-kcp-plugin_${KCP_VERSION}_${PLATFORM}_${ARCHITECTURE}.tar.gz
   cp bin/kubectl-* /usr/local/bin
 fi
 
