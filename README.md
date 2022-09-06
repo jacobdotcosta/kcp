@@ -7,4 +7,4 @@ Launch the kcp control plane using the bash script `./kcp.sh`.
 
 **Note**: If kcp is not installed like the kubectl kcp plugins, then they will be installed
 
-Next, in a second termonal, you can demo it using the 2nd script `./demo.sh`
+Next, in a second terminal, you can demo it using the 2nd script `./demo.sh`
