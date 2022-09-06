@@ -40,6 +40,8 @@ log() {
 }
 
 KCP_VERSION=0.8.0
+KCP_WORKSPACE=my-org
+KCP_KUBE_CFG_PATH=.kcp/admin.kubeconfig
 CLUSTER_NAME=kind
 
 log "CYAN" "Creating a kind cluster"
@@ -50,27 +52,29 @@ kind create cluster
 TEMP_DIR="_tmp"
 pushd $TEMP_DIR
 
-log "CYAN" "Create a kcp my-org workspace"
-KUBECONFIG=.kcp/admin.kubeconfig k kcp workspace create my-org --enter
+log "CYAN" "Create a kcp ${KCP_WORKSPACE} workspace"
+KUBECONFIG=${KCP_KUBE_CFG_PATH} k kcp workspace create ${KCP_WORKSPACE} --enter
 log "CYAN" "Sync kcp with kind API resources"
-KUBECONFIG=.kcp/admin.kubeconfig k kcp workload sync ${CLUSTER_NAME} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-kind.yml
+KUBECONFIG=${KCP_KUBE_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-kind.yml
 log "CYAN" "Deploy kcp syncer on kind"
 KUBECONFIG=$HOME/.kube/config k apply -f "syncer-kind.yml"
 
 log "CYAN" "Wait till sync is done"
-KUBECONFIG=.kcp/admin.kubeconfig k wait --for=condition=Ready synctarget/${CLUSTER_NAME}
+KUBECONFIG=${KCP_KUBE_CFG_PATH} k wait --for=condition=Ready synctarget/${CLUSTER_NAME}
 
-log "CYAN" "Create a kuard app"
-KUBECONFIG=.kcp/admin.kubeconfig k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue
-KUBECONFIG=.kcp/admin.kubeconfig k rollout status deployment/kuard
+log "CYAN" "Create a kuard app within the workspace: ${KCP_WORKSPACE}"
+KUBECONFIG=${KCP_KUBE_CFG_PATH} k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue
+KUBECONFIG=${KCP_KUBE_CFG_PATH} k rollout status deployment/kuard
 
-KUBECONFIG=.kcp/admin.kubeconfig k get deployments
-KUBECONFIG=.kcp/admin.kubeconfig k kcp ws use ..
+KUBECONFIG=${KCP_KUBE_CFG_PATH} k get deployments
+KUBECONFIG=${KCP_KUBE_CFG_PATH} k kcp ws use ..
 
 check_deployment="error: the server doesn't have a resource type \"deployments\""
-if [ $check_deployment == $(KUBECONFIG=_tmp/.kcp/admin.kubeconfig k get deployments 2>&1) ];then
-  log "CYAN" "Check succeeded as no deployments are found within the workspace - my-org."
-endif
+if [ "$check_deployment" == "$(KUBECONFIG=${KCP_KUBE_CFG_PATH} k get deployments 2>&1)" ];then
+  log "GREEN" "Check succeeded as no deployments are found within the: $(KUBECONFIG=${KCP_KUBE_CFG_PATH} k kcp workspace .)."
+else
+  log "RED" "Error: deployments found within: $(KUBECONFIG=${KCP_KUBE_CFG_PATH} k kcp workspace .)"
+fi
 
 popd
 

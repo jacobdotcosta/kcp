@@ -73,7 +73,9 @@ else
   cp bin/kubectl-* /usr/local/bin
 fi
 
-log "CYAN" "Starting the kcp server"
+log "CYAN" "Remove previously files created"
 rm -rf .kcp
+
+log "CYAN" "Starting the kcp server"
 ./bin/kcp start
 popd

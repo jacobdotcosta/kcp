@@ -19,4 +19,4 @@ During the execution of the script, the following steps will take place:
 - Resources are sync between kcp and the physical cluster
 - A kuard app is deployed using kcp within the `my-org` workspace
 - Workspace is switched to `root` 
-- We check that no deployments exist within the `root` workspace
+- We check that no deployments exist within the current workspace which should be `root`
