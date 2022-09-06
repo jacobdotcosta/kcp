@@ -36,10 +36,23 @@ log() {
   echo; generate_eyecatcher ${1} '#'; log_msg ${1} ${MSG}; generate_eyecatcher ${1} '#'; echo
 }
 
+check_os() {
+  PLATFORM='unknown'
+  unamestr=$(uname)
+  if [[ "$unamestr" == 'Linux' ]]; then
+     PLATFORM='linux'
+  elif [[ "$unamestr" == 'Darwin' ]]; then
+     PLATFORM='darwin'
+  fi
+  log "CYAN" "OS type: $PLATFORM"
+}
+
 # Global variables
 TEMP_DIR="_tmp"
-HW=darwin
 KCP_VERSION=0.8.0
+
+# Check OS TYPE and/or linux distro
+check_os
 
 log "CYAN" "Create temp directory"
 if [ ! -d $TEMP_DIR ]; then
@@ -53,10 +66,10 @@ if [ -f "./bin/kcp" ]; then
   log "CYAN" "kcp is already installed"
 else
   log "CYAN" "Installing the needed kcp tools"
-  wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kcp_${KCP_VERSION}_${HW}_amd64.tar.gz"
-  wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kubectl-kcp-plugin_${KCP_VERSION}_${HW}_amd64.tar.gz"
-  tar -vxf kcp_${KCP_VERSION}_${HW}_amd64.tar.gz
-  tar -vxf kubectl-kcp-plugin_${KCP_VERSION}_${HW}_amd64.tar.gz
+  wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kcp_${KCP_VERSION}_${PLATFORM}_amd64.tar.gz"
+  wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kubectl-kcp-plugin_${KCP_VERSION}_${PLATFORM}_amd64.tar.gz"
+  tar -vxf kcp_${KCP_VERSION}_${PLATFORM}_amd64.tar.gz
+  tar -vxf kubectl-kcp-plugin_${KCP_VERSION}_${PLATFORM}_amd64.tar.gz
   cp bin/kubectl-* /usr/local/bin
 fi
 
