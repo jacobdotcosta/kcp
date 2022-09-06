@@ -15,7 +15,7 @@ During the execution of the script, the following steps will take place:
 
 - A kind cluster will be created
 - The `my-org` workspace is created and defined as `current`
-- The `sync` tool is installed on the kind cluster 
+- The `syncer` [tool](https://github.com/kcp-dev/kcp/tree/main/docs/architecture#syncer) is installed on the kind cluster 
 - Resources are sync between kcp and the physical cluster
 - A kuard app is deployed using kcp within the `my-org` workspace
 - Workspace is switched to `root` 
