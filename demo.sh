@@ -55,6 +55,10 @@ fi
 log "CYAN" "Creating a kind cluster if it do not exist"
 if ! kind get clusters | grep "${cluster_name}" 1> /dev/null; then
   kind create cluster
+else
+  rm $HOME/.kube/config || true
+  kind delete cluster
+  kind create cluster
 fi
 
 TEMP_DIR="_tmp"
@@ -68,7 +72,7 @@ log "CYAN" "Deploy kcp syncer on kind"
 KUBECONFIG=$HOME/.kube/config k apply -f "syncer-kind.yml"
 
 log "CYAN" "Wait till sync is done"
-KUBECONFIG=${KCP_KUBE_CFG_PATH} k wait --for=condition=Ready synctarget/${CLUSTER_NAME}
+KUBECONFIG=${KCP_KUBE_CFG_PATH} k wait --for=condition=Ready --timeout=60s synctarget/${CLUSTER_NAME}
 
 log "CYAN" "Create a kuard app within the workspace: ${KCP_WORKSPACE}"
 KUBECONFIG=${KCP_KUBE_CFG_PATH} k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue
@@ -76,6 +80,9 @@ KUBECONFIG=${KCP_KUBE_CFG_PATH} k rollout status deployment/kuard
 
 log "CYAN" "Check deployments available within the: $(KUBECONFIG=${KCP_KUBE_CFG_PATH} k kcp workspace .)."
 KUBECONFIG=${KCP_KUBE_CFG_PATH} k get deployments
+
+log "CYAN" "Moving to the parent workspace which is root"
+KUBECONFIG=${KCP_KUBE_CFG_PATH} k kcp ws use ..
 
 check_deployment="error: the server doesn't have a resource type \"deployments\""
 if [ "$check_deployment" == "$(KUBECONFIG=${KCP_KUBE_CFG_PATH} k get deployments 2>&1)" ];then
