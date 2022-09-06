@@ -12,18 +12,17 @@ MAGENTA='\033[0;35m'
 CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 
-HELP_CONTENT="
-Usage: kcp.sh [OPTIONS]
-Options:
-[Global Mandatory Flags]
-  --action: What action to take ?
-    \"install\" : Install the kcp server locally and kcp kubectl plugins
-    \"start\"   : Start the kcp server
-    \"stop\"    : Stop the kcp server
-    \"clean\"   : Clean up the temp directory and remove the kcp plugins
+USAGE="
+Usage:
+  $0 <command> [OPTIONS]
 
-[Global Optional Flags]
-  --help: Show this help menu
+Use $0 <command> --help for more information about a given command.
+
+Commands:
+    install     Install the kcp server locally and kcp kubectl plugins
+    start       Start the kcp server
+    stop        Stop the kcp server
+    clean     Clean up the temp directory and remove the kcp plugins
 "
 
 ####################################
@@ -80,7 +79,7 @@ check_cpu() {
 ## Check if flags are passed and set the variables using the flogs passed
 ############################################################################
 if [[ $# == 0 ]]; then
-  fixme "No Flags were passed. Run with --help flag to get usage information"
+  fixme "No action were passed. Run with --help flag to get usage information"
   exit 1
 fi
 
@@ -89,10 +88,12 @@ while test $# -gt 0; do
      -a | --action)
       shift
       action=$1
-      shift;;
+      shift
+      ;;
      -h | --help)
       echo "$HELP_CONTENT"
-      exit 1;;
+      exit 1
+      ;;
     *)
       fixme "$1 is note a recognized flag!"
       exit 1
