@@ -67,7 +67,11 @@ KUBECONFIG=.kcp/admin.kubeconfig k rollout status deployment/kuard
 KUBECONFIG=.kcp/admin.kubeconfig k get deployments
 KUBECONFIG=.kcp/admin.kubeconfig k kcp ws use ..
 
-KUBECONFIG=.kcp/admin.kubeconfig k get deployments
+check_deployment="error: the server doesn't have a resource type \"deployments\""
+if [ $check_deployment == $(KUBECONFIG=_tmp/.kcp/admin.kubeconfig k get deployments 2>&1) ];then
+  log "CYAN" "Check succeeded as no deployments are found within the workspace - my-org."
+endif
+
 popd
 
 
