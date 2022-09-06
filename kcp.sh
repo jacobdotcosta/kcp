@@ -36,7 +36,10 @@ log() {
   echo; generate_eyecatcher ${1} '#'; log_msg ${1} ${MSG}; generate_eyecatcher ${1} '#'; echo
 }
 
+# Global variables
 TEMP_DIR="_tmp"
+HW=darwin
+KCP_VERSION=0.8.0
 
 log "CYAN" "Create temp directory"
 if [ ! -d $TEMP_DIR ]; then
@@ -45,14 +48,17 @@ fi
 
 pushd $TEMP_DIR
 
-log "CYAN" "Installing the needed kcp tools"
-HW=darwin
-KCP_VERSION=0.8.0
-wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kcp_${KCP_VERSION}_${HW}_amd64.tar.gz"
-wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kubectl-kcp-plugin_${KCP_VERSION}_${HW}_amd64.tar.gz"
-tar -vxf kcp_${KCP_VERSION}_${HW}_amd64.tar.gz
-tar -vxf kubectl-kcp-plugin_${KCP_VERSION}_${HW}_amd64.tar.gz
-cp bin/kubectl-* /usr/local/bin
+log "CYAN" "Check if kcp is installed"
+if [ -f "./bin/kcp" ]; then
+  log "CYAN" "kcp is already installed"
+else
+  log "CYAN" "Installing the needed kcp tools"
+  wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kcp_${KCP_VERSION}_${HW}_amd64.tar.gz"
+  wget "https://github.com/kcp-dev/kcp/releases/download/v${KCP_VERSION}/kubectl-kcp-plugin_${KCP_VERSION}_${HW}_amd64.tar.gz"
+  tar -vxf kcp_${KCP_VERSION}_${HW}_amd64.tar.gz
+  tar -vxf kubectl-kcp-plugin_${KCP_VERSION}_${HW}_amd64.tar.gz
+  cp bin/kubectl-* /usr/local/bin
+fi
 
 log "CYAN" "Starting the kcp server"
 rm -rf .kcp
