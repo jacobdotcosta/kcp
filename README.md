@@ -17,8 +17,8 @@ Commands:
     clean       Clean up the temp directory and remove the kcp plugins
 
 Arguments:
-    -v          Version to be used of the kcp server. E.g: -v 0.8.0
-    -t          Temporary folder where kcp will be installed. E.g: -t _tmp
+    -v          Version to be used of the kcp server. Default value `0.8.0`
+    -t          Temporary folder where kcp will be installed. Default value `_tmp
 ```
 
 Next, in a second terminal, you can run the `./demo.sh` script.
