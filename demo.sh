@@ -40,55 +40,33 @@ log() {
 }
 
 # Global variables
-KCP_VERSION=0.8.0
 KCP_WORKSPACE=my-org
-KCP_KUBE_CFG_PATH=.kcp/admin.kubeconfig
+KCP_CFG_PATH=.kcp/admin.kubeconfig
 CLUSTER_NAME=kind
-
-if ! command -v kind &> /dev/null; then
-  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  echo "kind is not installed"
-  echo "Use a package manager (i.e 'brew install kind') or visit the official site https://kind.sigs.k8s.io"
-  exit 1
-fi
-
-log "CYAN" "Creating a kind cluster if it do not exist"
-if ! kind get clusters | grep "${cluster_name}" 1> /dev/null; then
-  kind create cluster
-else
-  rm $HOME/.kube/config || true
-  kind delete cluster
-  kind create cluster
-fi
 
 TEMP_DIR="_tmp"
 pushd $TEMP_DIR
 
-log "CYAN" "Create a kcp ${KCP_WORKSPACE} workspace"
-KUBECONFIG=${KCP_KUBE_CFG_PATH} k kcp workspace create ${KCP_WORKSPACE} --enter
-log "CYAN" "Sync kcp with kind API resources"
-KUBECONFIG=${KCP_KUBE_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-kind.yml
-log "CYAN" "Deploy kcp syncer on kind"
-KUBECONFIG=$HOME/.kube/config k apply -f "syncer-kind.yml"
+export KUBECONFIG=${KCP_CFG_PATH}
 
-log "CYAN" "Wait till sync is done"
-KUBECONFIG=${KCP_KUBE_CFG_PATH} k wait --for=condition=Ready --timeout=60s synctarget/${CLUSTER_NAME}
+log "CYAN" "Create a kcp ${KCP_WORKSPACE} workspace"
+k kcp workspace create ${KCP_WORKSPACE} --enter
 
 log "CYAN" "Create a kuard app within the workspace: ${KCP_WORKSPACE}"
-KUBECONFIG=${KCP_KUBE_CFG_PATH} k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue
-KUBECONFIG=${KCP_KUBE_CFG_PATH} k rollout status deployment/kuard
+k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue
+k rollout status deployment/kuard
 
-log "CYAN" "Check deployments available within the: $(KUBECONFIG=${KCP_KUBE_CFG_PATH} k kcp workspace .)."
-KUBECONFIG=${KCP_KUBE_CFG_PATH} k get deployments
+log "CYAN" "Check deployments available within the: $(k kcp workspace .)."
+k get deployments
 
 log "CYAN" "Moving to the parent workspace which is root"
-KUBECONFIG=${KCP_KUBE_CFG_PATH} k kcp ws use ..
+k kcp ws use ..
 
 check_deployment="error: the server doesn't have a resource type \"deployments\""
-if [ "$check_deployment" == "$(KUBECONFIG=${KCP_KUBE_CFG_PATH} k get deployments 2>&1)" ];then
-  log "GREEN" "Check succeeded as no deployments are found within the: $(KUBECONFIG=${KCP_KUBE_CFG_PATH} k kcp workspace .)."
+if [ "$check_deployment" == "$(k get deployments 2>&1)" ];then
+  log "GREEN" "Check succeeded as no deployments are found within the: $(k kcp workspace .)."
 else
-  log "RED" "Error: deployments found within: $(KUBECONFIG=${KCP_KUBE_CFG_PATH} k kcp workspace .)"
+  log "RED" "Error: deployments found within: $(k kcp workspace .)"
 fi
 
 popd

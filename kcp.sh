@@ -12,6 +12,9 @@ MAGENTA='\033[0;35m'
 CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 
+shopt -s expand_aliases
+alias k='kubectl'
+
 ####################################
 ## Section to declare the functions
 ####################################
@@ -52,6 +55,7 @@ Commands:
     install     Install the kcp server locally and kcp kubectl plugins
     start       Start the kcp server
     stop        Stop the kcp server
+    syncer      Generate and install the syncer component
     clean       Clean up the temp directory and remove the kcp plugins
 
 Arguments:
@@ -96,7 +100,7 @@ shift
 ############################################################################
 ## Get the arguments passed to the command
 ############################################################################
-while getopts ":ht:v:" arg; do
+while getopts ":ht:v:c:" arg; do
    # note "Arg: ${arg}."
    case ${arg} in
       h) # display Help
@@ -108,6 +112,9 @@ while getopts ":ht:v:" arg; do
          ;;
       t) # Temporary directory to install kcp
          TEMP_DIR=${OPTARG}
+         ;;
+      c) # Name of the k8s cluster where syncer is installed
+         CLUSTER_NAME=${OPTARG}
          ;;
       ?) # Invalid arg
          error "Invalid arg was specified -$OPTARG"
@@ -123,6 +130,9 @@ done
 #######################################################
 : ${TEMP_DIR:="_tmp"}
 : ${KCP_VERSION=0.8.0}
+: ${KCP_CFG_PATH=.kcp/admin.kubeconfig}
+: ${KUBE_CFG_PATH=$HOME/.kube/config}
+: ${CLUSTER_NAME=kind}
 
 #######################################################
 ## Set local default values
@@ -171,6 +181,15 @@ case $ACTION in
   stop)
     note "Stopping kcp..."
     pkill kcp
+    ;;
+  syncer)
+    log "CYAN" "Generate the syncer yaml resources against the cluster name: ${CLUSTER_NAME}"
+    KUBECONFIG=${KCP_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-kind.yml
+    log "CYAN" "Deploy kcp syncer on kind"
+    KUBECONFIG=${KUBE_CFG_PATH} k apply -f "syncer-kind.yml"
+    warn "Syncer can be deleted using the command: kubectl delete -f ${TEMP_DIR}/syncer-kind.yml"
+    log "CYAN" "Wait till sync is done"
+    KUBECONFIG=${KCP_CFG_PATH} k wait --for=condition=Ready --timeout=60s synctarget/${CLUSTER_NAME}
     ;;
   clean)
     note "Stopping kcp..."
