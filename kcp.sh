@@ -176,12 +176,12 @@ case $ACTION in
     note "Stopping kcp..."
     pkill kcp || true
     note "Removing kubectl kcp plugins"
-    rm /usr/local/bin/kubectl-{kcp,ws,workspaces}
+    rm /usr/local/bin/kubectl-{kcp,ws,workspaces} || true
     note "Deleting temp directory content"
     rm -r *
     ;;
    *)
-    error "Unknown action passed: $action. Please use -h."
+    error "Unknown command passed: $ACTION. Please use -h."
     exit 1
 esac
 
