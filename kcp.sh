@@ -12,19 +12,6 @@ MAGENTA='\033[0;35m'
 CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 
-USAGE="
-Usage:
-  $0 <command> [OPTIONS]
-
-Use $0 <command> --help for more information about a given command.
-
-Commands:
-    install     Install the kcp server locally and kcp kubectl plugins
-    start       Start the kcp server
-    stop        Stop the kcp server
-    clean     Clean up the temp directory and remove the kcp plugins
-"
-
 ####################################
 ## Section to declare the functions
 ####################################
@@ -47,13 +34,32 @@ warn() {
   echo -e "\n${YELLOW}WARN:${NC} $1"
 }
 
-fixme() {
-  echo -e "\n${RED}FIXME:${NC} $1"
+error() {
+  echo -e "${RED}ERROR:${NC} $1"
 }
 
 log() {
   MSG="${@:2}"
   echo; repeat_char ${1} '#'; msg ${1} ${MSG}; repeat_char ${1} '#'; echo
+}
+
+print_help() {
+cat << EOF
+Usage:
+  $0 <command> [args]
+
+Commands:
+    install     Install the kcp server locally and kcp kubectl plugins
+    start       Start the kcp server
+    stop        Stop the kcp server
+    clean       Clean up the temp directory and remove the kcp plugins
+
+Arguments:
+    -v          Version to be installed of the kcp server. E.g: -v 0.8.0
+    -t          Temporary folder where kcp will be installed. E.g: -t _tmp
+
+Use $0 <command> -h for more information about a given command.
+EOF
 }
 
 check_os() {
@@ -78,27 +84,38 @@ check_cpu() {
 ############################################################################
 ## Check if flags are passed and set the variables using the flogs passed
 ############################################################################
-if [[ $# == 0 ]]; then
-  fixme "No action were passed. Run with --help flag to get usage information"
+if [ "$#" == "0" ]; then
+  error "No command passed to $0. Use -h for usage"
   exit 1
 fi
 
-while test $# -gt 0; do
-  case "$1" in
-     -a | --action)
-      shift
-      action=$1
-      shift
-      ;;
-     -h | --help)
-      echo "$HELP_CONTENT"
-      exit 1
-      ;;
-    *)
-      fixme "$1 is note a recognized flag!"
-      exit 1
-      ;;
-  esac
+ACTION=$1
+# note "Action: $ACTION"
+shift
+
+############################################################################
+## Get the arguments passed to the command
+############################################################################
+while getopts ":ht:v:" arg; do
+   # note "Arg: ${arg}."
+   case ${arg} in
+      h) # display Help
+         print_help
+         exit
+         ;;
+      v) # Version to be installed
+         KCP_VERSION=${OPTARG}
+         ;;
+      t) # Temporary directory to install kcp
+         TEMP_DIR=${OPTARG}
+         ;;
+      ?) # Invalid arg
+         error "Invalid arg was specified -$OPTARG"
+         echo
+         print_help
+         exit
+         ;;
+   esac
 done
 
 #######################################################
@@ -122,14 +139,11 @@ fi
 
 pushd $TEMP_DIR
 
-# Validate that an action was passed
-if ! [[ $action ]]; then
-  fixme "Please pass a valid action using the flag (e.g. --action create)"
-  exit 1
-fi
-
 # Actions to executed
-case $action in
+case $ACTION in
+  -h)
+    print_help
+    ;;
   install)
     note "Check if kcp is installed"
     if [ -f "./bin/kcp" ]; then
@@ -151,7 +165,7 @@ case $action in
       note "Starting the kcp server"
       ./bin/kcp start &
     else
-       warn "kcp is not installed !!"
+      warn "kcp is not installed !!"
     fi
     ;;
   stop)
@@ -167,7 +181,7 @@ case $action in
     rm -r *
     ;;
    *)
-    fixme "Unknown action passed: $action. Please use --help."
+    error "Unknown action passed: $action. Please use -h."
     exit 1
 esac
 
