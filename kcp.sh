@@ -59,8 +59,10 @@ Commands:
     clean       Clean up the temp directory and remove the kcp plugins
 
 Arguments:
-    -v          Version to be installed of the kcp server. E.g: -v 0.8.0
-    -t          Temporary folder where kcp will be installed. E.g: -t _tmp
+    -v          Version to be installed of the kcp server. Default: 0.8.0
+    -t          Temporary folder where kcp will be installed. Default: _tmp
+    -c          Name of the k8s cluster where syncer is installed. Default: kind
+    -w          Workspace to sync resources between kcp and target cluster. Default: my-org
 
 Use $0 <command> -h for more information about a given command.
 EOF
@@ -100,7 +102,7 @@ shift
 ############################################################################
 ## Get the arguments passed to the command
 ############################################################################
-while getopts ":ht:v:c:" arg; do
+while getopts ":ht:w:v:c:" arg; do
    # note "Arg: ${arg}."
    case ${arg} in
       h) # display Help
@@ -115,6 +117,9 @@ while getopts ":ht:v:c:" arg; do
          ;;
       c) # Name of the k8s cluster where syncer is installed
          CLUSTER_NAME=${OPTARG}
+         ;;
+      w) # Workspace to sync resources between kcp and target cluster
+         KCP_WORKSPACE=${OPTARG}
          ;;
       ?) # Invalid arg
          error "Invalid arg was specified -$OPTARG"
@@ -133,6 +138,7 @@ done
 : ${KCP_CFG_PATH=.kcp/admin.kubeconfig}
 : ${KUBE_CFG_PATH=$HOME/.kube/config}
 : ${CLUSTER_NAME=kind}
+: ${KCP_WORKSPACE=my-org}
 
 #######################################################
 ## Set local default values
@@ -183,6 +189,13 @@ case $ACTION in
     pkill kcp
     ;;
   syncer)
+    log "CYAN" "Move to the target workspace: ${KCP_WORKSPACE}"
+    wks_not_found="error: workspace \"root:my-org\" not found"
+    if [ "$wks_not_found" == "$(KUBECONFIG=${KCP_CFG_PATH} k kcp ws root:${KCP_WORKSPACE} 2>&1)" ];then
+      KUBECONFIG=${KCP_CFG_PATH} k kcp ws create ${KCP_WORKSPACE} --enter
+    else
+      KUBECONFIG=${KCP_CFG_PATH} k kcp ws ${KCP_WORKSPACE}
+    fi
     log "CYAN" "Generate the syncer yaml resources against the cluster name: ${CLUSTER_NAME}"
     KUBECONFIG=${KCP_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-kind.yml
     log "CYAN" "Deploy kcp syncer on kind"

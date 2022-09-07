@@ -49,8 +49,8 @@ pushd $TEMP_DIR
 
 export KUBECONFIG=${KCP_CFG_PATH}
 
-log "CYAN" "Create a kcp ${KCP_WORKSPACE} workspace"
-k kcp workspace create ${KCP_WORKSPACE} --enter
+log "CYAN" "Move to the root:${KCP_WORKSPACE} workspace"
+k kcp ws use root:${KCP_WORKSPACE}
 
 log "CYAN" "Create a kuard app within the workspace: ${KCP_WORKSPACE}"
 k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue
