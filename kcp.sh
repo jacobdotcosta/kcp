@@ -179,7 +179,7 @@ case $ACTION in
 
     if [ -f "./bin/kcp" ]; then
       note "Starting the kcp server"
-      ./bin/kcp start &
+      ./bin/kcp start &> kcp-output.log
     else
       warn "kcp is not installed !!"
     fi
