@@ -1,6 +1,6 @@
 ## Introduction
 
-In order to use, play with [kcp]((https://github.com/kcp-dev/kcp)) it is needed to install different tools: kcp, kubectl kcp plugins and launch it.
+In order to use, play with [kcp](https://github.com/kcp-dev/kcp) it is needed to install different tools: kcp, kubectl kcp plugins and launch it.
 Next, you can create workspaces and start to setup logical clusters that kcp will manage on physical clusters.
 
 ## Prerequisite
