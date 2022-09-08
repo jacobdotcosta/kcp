@@ -190,7 +190,7 @@ case $ACTION in
     ;;
   syncer)
     log "CYAN" "Move to the target workspace: ${KCP_WORKSPACE}"
-    wks_not_found="error: workspace \"root:my-org\" not found"
+    wks_not_found="error: workspace \"root:${KCP_WORKSPACE}\" not found"
     if [ "$wks_not_found" == "$(KUBECONFIG=${KCP_CFG_PATH} k kcp ws root:${KCP_WORKSPACE} 2>&1)" ];then
       KUBECONFIG=${KCP_CFG_PATH} k kcp ws create ${KCP_WORKSPACE} --enter
     else
