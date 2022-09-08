@@ -34,10 +34,9 @@ To setup the demo, then execute the following commands:
 kind create cluster
 ./kcp.sh install -v 0.8.0
 ./kcp.sh start
-./kcp.sh syncer -w my-org
 ```
 
-Next, in a second terminal, you can run the `./demo.sh` script.
+Next, in a second terminal, you will deploy a kcp syncer `./kcp.sh syncer -w my-org` and next run the `./demo.sh` script.
 
 During the execution of the script, the following steps will take place:
 
