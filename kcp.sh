@@ -30,11 +30,11 @@ msg() {
 }
 
 note() {
-  echo -e "\n${BLUE}NOTE:${NC} $1"
+  echo -e "${BLUE}NOTE:${NC} $1"
 }
 
 warn() {
-  echo -e "\n${YELLOW}WARN:${NC} $1"
+  echo -e "${YELLOW}WARN:${NC} $1"
 }
 
 error() {
@@ -179,7 +179,7 @@ case $ACTION in
 
     if [ -f "./bin/kcp" ]; then
       note "Starting the kcp server"
-      ./bin/kcp start &> kcp-output.log
+      ./bin/kcp start &> kcp-output.log &
     else
       warn "kcp is not installed !!"
     fi
