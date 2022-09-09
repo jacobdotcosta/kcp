@@ -29,6 +29,10 @@ msg() {
   echo -e "\n${!COLOR}## ${MSG}${NC}"
 }
 
+succeeded() {
+  echo -e "${GREEN}NOTE:${NC} $1"
+}
+
 note() {
   echo -e "${BLUE}NOTE:${NC} $1"
 }
