@@ -99,7 +99,7 @@ pushd $TEMP_DIR
 
 export KUBECONFIG=${KCP_CFG_PATH}
 
-note "Move to the root:${KCP_WORKSPACE} workspace"
+note "Moving to the root:${KCP_WORKSPACE} workspace"
 note ">> k kcp ws use root:${KCP_WORKSPACE}"
 k kcp ws use root:${KCP_WORKSPACE}
 

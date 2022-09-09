@@ -48,7 +48,6 @@ During the execution of the script, the following steps will take place:
 
 and you will see the following messages
 ```bash
-~/code/ch007m/kcp/_tmp ~/code/ch007m/kcp
 NOTE: Move to the root:my-org workspace
 NOTE: >> k kcp ws use root:my-org
 Current workspace is "root:my-org".
