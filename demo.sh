@@ -121,6 +121,7 @@ case $ACTION in
     print_help
     ;;
   s1)
+    log "CYAN" "Scenario 1: Create a workspace, deploy an application, move one level up and verify that no deployments exist as workspaces are isolated"
     note "Moving to the root:${KCP_WORKSPACE} workspace"
     note ">> k kcp ws use root:${KCP_WORKSPACE}"
     k kcp ws use root:${KCP_WORKSPACE}
