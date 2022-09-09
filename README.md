@@ -45,3 +45,26 @@ During the execution of the script, the following steps will take place:
 - A kuard app is deployed using kcp within the `my-org` workspace
 - Workspace is switched to `root` 
 - We check that no deployments exist within the current workspace which should be `root`
+
+and you will see the following messages
+```bash
+~/code/ch007m/kcp/_tmp ~/code/ch007m/kcp
+NOTE: Move to the root:my-org workspace
+NOTE: >> k kcp ws use root:my-org
+Current workspace is "root:my-org".
+NOTE: Create a kuard app within the workspace: my-org
+NOTE: >> k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue
+deployment.apps/kuard created
+NOTE: >> k rollout status deployment/kuard
+Waiting for deployment "kuard" rollout to finish: 0 of 1 updated replicas are available...
+deployment "kuard" successfully rolled out
+NOTE: Check deployments available within the: Current workspace is "root:my-org"..
+NOTE: >> k get deployments
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+kuard   1/1     1            1           6s
+NOTE: Moving to the parent workspace which is root
+NOTE: >> k kcp ws use ..
+Current workspace is "root".
+NOTE: Check succeeded as no deployments were found within the: Current workspace is "root"..
+~/code/ch007m/kcp
+```

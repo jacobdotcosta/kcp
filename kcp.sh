@@ -189,19 +189,19 @@ case $ACTION in
     pkill kcp
     ;;
   syncer)
-    log "CYAN" "Move to the target workspace: ${KCP_WORKSPACE}"
+    note "Move to the target workspace: ${KCP_WORKSPACE}"
     wks_not_found="error: workspace \"root:${KCP_WORKSPACE}\" not found"
     if [ "$wks_not_found" == "$(KUBECONFIG=${KCP_CFG_PATH} k kcp ws root:${KCP_WORKSPACE} 2>&1)" ];then
       KUBECONFIG=${KCP_CFG_PATH} k kcp ws create ${KCP_WORKSPACE} --enter
     else
       KUBECONFIG=${KCP_CFG_PATH} k kcp ws ${KCP_WORKSPACE}
     fi
-    log "CYAN" "Generate the syncer yaml resources against the cluster name: ${CLUSTER_NAME}"
+    note "Generate the syncer yaml resources against the cluster name: ${CLUSTER_NAME}"
     KUBECONFIG=${KCP_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-${CLUSTER_NAME}.yml
-    log "CYAN" "Deploy kcp syncer on kind"
+    note "Deploy kcp syncer on kind"
     KUBECONFIG=${KUBE_CFG_PATH} k apply -f "syncer-${CLUSTER_NAME}.yml"
     warn "Syncer can be deleted using the command: kubectl delete -f ${TEMP_DIR}/syncer-${CLUSTER_NAME}.yml"
-    log "CYAN" "Wait till sync is done"
+    note "Wait till sync is done"
     KUBECONFIG=${KCP_CFG_PATH} k wait --for=condition=Ready --timeout=60s synctarget/${CLUSTER_NAME}
     KUBECONFIG=${KCP_CFG_PATH} k kcp ws ..
     ;;

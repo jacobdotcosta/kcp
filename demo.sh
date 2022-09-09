@@ -12,61 +12,116 @@ MAGENTA='\033[0;35m'
 CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 
-newline=$'\n'
-
 shopt -s expand_aliases
 alias k='kubectl'
 
-generate_eyecatcher(){
+####################################
+## Section to declare the functions
+####################################
+repeat_char(){
   COLOR=${1}
-	for i in {1..50}; do echo -ne "${!COLOR}$2${NC}"; done
+	for i in {1..70}; do echo -ne "${!COLOR}$2${NC}"; done
 }
 
-log_msg() {
+msg() {
   COLOR=${1}
   MSG="${@:2}"
   echo -e "\n${!COLOR}## ${MSG}${NC}"
 }
 
-log_line() {
-  COLOR=${1}
-  MSG="${@:2}"
-  echo -e "${!COLOR}## ${MSG}${NC}"
+succeeded() {
+  echo -e "${GREEN}NOTE:${NC} $1"
+}
+
+note() {
+  echo -e "${BLUE}NOTE:${NC} $1"
+}
+
+warn() {
+  echo -e "${YELLOW}WARN:${NC} $1"
+}
+
+error() {
+  echo -e "${RED}ERROR:${NC} $1"
 }
 
 log() {
   MSG="${@:2}"
-  echo; generate_eyecatcher ${1} '#'; log_msg ${1} ${MSG}; generate_eyecatcher ${1} '#'; echo
+  echo; repeat_char ${1} '#'; msg ${1} ${MSG}; repeat_char ${1} '#'; echo
 }
 
-# Global variables
-KCP_WORKSPACE=my-org
-KCP_CFG_PATH=.kcp/admin.kubeconfig
-CLUSTER_NAME=kind
+print_help() {
+cat << EOF
+Usage:
+  $0 [args]
 
-TEMP_DIR="_tmp"
+Arguments:
+    -t          Temporary folder where kcp is running. Default: _tmp
+    -w          Workspace to be used for the demo. Default: my-org
+
+Use $0 <command> -h for more information about a given command.
+EOF
+}
+
+############################################################################
+## Get the arguments passed to the command
+############################################################################
+while getopts ":ht:w:v:c:" arg; do
+   # note "Arg: ${arg}."
+   case ${arg} in
+      h) # display Help
+         print_help
+         exit
+         ;;
+      t) # Temporary directory where kcp is running
+         TEMP_DIR=${OPTARG}
+         ;;
+      w) # Workspace to sync resources between kcp and target cluster
+         KCP_WORKSPACE=${OPTARG}
+         ;;
+      ?) # Invalid arg
+         error "Invalid arg was specified -$OPTARG"
+         echo
+         print_help
+         exit
+         ;;
+   esac
+done
+
+#######################################################
+## Set default values when no optional flags are passed
+#######################################################
+: ${TEMP_DIR:="_tmp"}
+: ${KCP_CFG_PATH=.kcp/admin.kubeconfig}
+: ${KCP_WORKSPACE=my-org}
+
 pushd $TEMP_DIR
 
 export KUBECONFIG=${KCP_CFG_PATH}
 
-log "CYAN" "Move to the root:${KCP_WORKSPACE} workspace"
+note "Move to the root:${KCP_WORKSPACE} workspace"
+note ">> k kcp ws use root:${KCP_WORKSPACE}"
 k kcp ws use root:${KCP_WORKSPACE}
 
-log "CYAN" "Create a kuard app within the workspace: ${KCP_WORKSPACE}"
+note "Create a kuard app within the workspace: ${KCP_WORKSPACE}"
+note ">> k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue"
 k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue
+note ">> k rollout status deployment/kuard"
 k rollout status deployment/kuard
 
-log "CYAN" "Check deployments available within the: $(k kcp workspace .)."
+note "Check deployments available within the: $(k kcp workspace .)."
+note ">> k get deployments"
 k get deployments
 
-log "CYAN" "Moving to the parent workspace which is root"
+note "Moving to the parent workspace which is root"
+note ">> k kcp ws use .."
 k kcp ws use ..
 
 check_deployment="error: the server doesn't have a resource type \"deployments\""
 if [ "$check_deployment" == "$(k get deployments 2>&1)" ];then
-  log "GREEN" "Check succeeded as no deployments are found within the: $(k kcp workspace .)."
+  succeeded "Check succeeded as no deployments were found within the: $(k kcp workspace .)."
 else
-  log "RED" "Error: deployments found within: $(k kcp workspace .)"
+  error "Error: deployments found within: $(k kcp workspace .)"
 fi
 
 popd
