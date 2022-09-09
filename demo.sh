@@ -126,11 +126,11 @@ case $ACTION in
     note ">> k kcp ws use root:${KCP_WORKSPACE}"
     k kcp ws use root:${KCP_WORKSPACE}
 
-    note "Create a kuard app within the workspace: ${KCP_WORKSPACE}"
-    note ">> k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue"
-    k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue
-    note ">> k rollout status deployment/kuard"
-    k rollout status deployment/kuard
+    note "Create a quarkus  app within the workspace: ${KCP_WORKSPACE}"
+    note ">> k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1"
+    k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1
+    note ">> k rollout status deployment/quarkus"
+    k rollout status deployment/quarkus
 
     note "Check deployments available within the: $(k kcp workspace .)."
     note ">> k get deployments"
