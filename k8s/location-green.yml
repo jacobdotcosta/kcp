@@ -3,11 +3,13 @@ kind: Location
 metadata:
   annotations:
     kcp.dev/cluster: root:my-org
-  label:
+  labels:
     color: green
   name: green
 spec:
-  instanceSelector: {}
+  instanceSelector:
+  - matchLabels:
+      color: blue
   resource:
     group: workload.kcp.dev
     resource: synctargets
