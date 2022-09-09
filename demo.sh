@@ -56,10 +56,9 @@ Usage:
   $0 [args]
 
 Arguments:
-    -t          Temporary folder where kcp is running. Default: _tmp
-    -w          Workspace to be used for the demo. Default: my-org
-
-Use $0 <command> -h for more information about a given command.
+    -h      Display the help
+    -t      Temporary folder where kcp is running. Default: _tmp
+    -w      Workspace to be used for the demo. Default: my-org
 EOF
 }
 

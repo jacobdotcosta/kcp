@@ -38,6 +38,16 @@ kind create cluster
 ```
 
 Next, in a second terminal, you will deploy a kcp syncer `./kcp.sh syncer -w my-org` and next run the `./demo.sh` script.
+You can change the path of the project where kcp is installed like the workspace to be used, using the parameters
+```bash
+Usage:
+  ./demo.sh [args]
+
+Arguments:
+    -h      Display the help
+    -t      Temporary folder where kcp is running. Default: _tmp
+    -w      Workspace to be used for the demo. Default: my-org
+```
 
 During the execution of the script, the following steps will take place:
 
