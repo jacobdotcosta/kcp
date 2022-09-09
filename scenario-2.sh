@@ -26,7 +26,7 @@ kubectl ctx kind-cluster1
 kubectl ctx kind-cluster2
 ./kcp.sh syncer -w my-org -c cluster2
 
-#./demo.sh s1
+./demo.sh s1
 
 
 

@@ -194,7 +194,7 @@ case $ACTION in
     if [ "$wks_not_found" == "$(KUBECONFIG=${KCP_CFG_PATH} k kcp ws root:${KCP_WORKSPACE} 2>&1)" ];then
       KUBECONFIG=${KCP_CFG_PATH} k kcp ws create ${KCP_WORKSPACE} --enter
     else
-      KUBECONFIG=${KCP_CFG_PATH} k kcp ws ${KCP_WORKSPACE}
+      KUBECONFIG=${KCP_CFG_PATH} k kcp ws root:${KCP_WORKSPACE}
     fi
     note "Generate the syncer yaml resources against the cluster name: ${CLUSTER_NAME}"
     KUBECONFIG=${KCP_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-${CLUSTER_NAME}.yml
