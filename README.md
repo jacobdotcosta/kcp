@@ -37,7 +37,9 @@ kind create cluster
 ./kcp.sh start
 ```
 
-Next, in a second terminal, you will deploy a kcp syncer `./kcp.sh syncer -w my-org` and next run the `./demo.sh s1` script.
+Next, in a second terminal, you will deploy a kcp syncer `./kcp.sh syncer -w my-org` and next run the `./demo.sh` script using the different
+scenario available.
+
 You can change the path of the project where kcp is installed like the workspace to be used, using the parameters
 ```bash
 Usage:
@@ -54,13 +56,10 @@ Arguments:
 Use $demo.sh <scenario> -h for more information about a given scenario.
 ```
 
-During the execution of the script, the following steps will take place:
+## Scenario 1
 
-- The `my-org` workspace is created and defined as `current`
-- A kuard app is deployed using kcp within the `my-org` workspace
-- Workspace is switched to `root` 
-- We check that no deployments exist within the current workspace which should be `root`
+Create a workspace, deploy an application, move one level up and verify that no deployments exist as workspaces are isolated
 
-and you will see the following messages:
+During the execution of this scenario `./demo.sh s1`, the following steps will be executed:
 
 ![](img/demo_log.png)
