@@ -3,7 +3,9 @@
 #
 # End to end scenario 1
 #
-./kcp.sh clean
+./kcp.sh stop
+rm -rf _/tmp
+
 kind delete cluster
 kind create cluster
 
