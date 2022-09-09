@@ -1,0 +1,16 @@
+apiVersion: scheduling.kcp.dev/v1alpha1
+kind: Placement
+metadata:
+  annotations:
+    kcp.dev/cluster: root:my-org
+  name: blue
+spec:
+  locationResource:
+    group: workload.kcp.dev
+    resource: synctargets
+    version: v1alpha1
+  locationSelectors:
+  - matchLabels:
+      color: blue
+  locationWorkspace: root:my-org
+  namespaceSelector: {}
