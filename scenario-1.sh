@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
 
+shopt -s expand_aliases
+alias k='kubectl'
+
 #
 # End to end scenario 1
 #
 ./kcp.sh stop
-rm -rf _/tmp
+rm -rf _tmp/
+./kcp.sh install -v 0.8.2
+./kcp.sh start
 
 kind delete cluster
 kind create cluster
 
-./kcp.sh install -v 0.8.2
-./kcp.sh start
-
 tail -f _tmp/kcp-output.log | while read LOGLINE
 do
-   [[ "${LOGLINE}" == *"finished bootstrapping the shard workspace"* ]] && pkill -P $$ tail
+   [[ "${LOGLINE}" == *"finished bootstrapping root workspace phase 1"* ]] && pkill -P $$ tail
 done
 echo "KCP is started :-)"
 
