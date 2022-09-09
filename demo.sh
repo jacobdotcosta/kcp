@@ -53,14 +53,32 @@ log() {
 print_help() {
 cat << EOF
 Usage:
-  $0 [args]
+  $0 <scenario> [args]
+
+Commands:
+    s1      Create a workspace, deploy an application, move one level up and verify that no deployments exist as workspaces are isolated
 
 Arguments:
     -h      Display the help
     -t      Temporary folder where kcp is running. Default: _tmp
     -w      Workspace to be used for the demo. Default: my-org
+
+Use $0 <scenario> -h for more information about a given scenario.
+
 EOF
 }
+
+############################################################################
+## Check if flags are passed and set the variables using the flogs passed
+############################################################################
+if [ "$#" == "0" ]; then
+  error "No command passed to $0. Use -h for usage"
+  exit 1
+fi
+
+ACTION=$1
+# note "Action: $ACTION"
+shift
 
 ############################################################################
 ## Get the arguments passed to the command
@@ -95,36 +113,45 @@ done
 : ${KCP_WORKSPACE=my-org}
 
 pushd $TEMP_DIR
-
 export KUBECONFIG=${KCP_CFG_PATH}
 
-note "Moving to the root:${KCP_WORKSPACE} workspace"
-note ">> k kcp ws use root:${KCP_WORKSPACE}"
-k kcp ws use root:${KCP_WORKSPACE}
+# Actions to executed
+case $ACTION in
+  -h)
+    print_help
+    ;;
+  s1)
+    note "Moving to the root:${KCP_WORKSPACE} workspace"
+    note ">> k kcp ws use root:${KCP_WORKSPACE}"
+    k kcp ws use root:${KCP_WORKSPACE}
 
-note "Create a kuard app within the workspace: ${KCP_WORKSPACE}"
-note ">> k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue"
-k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue
-note ">> k rollout status deployment/kuard"
-k rollout status deployment/kuard
+    note "Create a kuard app within the workspace: ${KCP_WORKSPACE}"
+    note ">> k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue"
+    k create deployment kuard --image gcr.io/kuar-demo/kuard-amd64:blue
+    note ">> k rollout status deployment/kuard"
+    k rollout status deployment/kuard
 
-note "Check deployments available within the: $(k kcp workspace .)."
-note ">> k get deployments"
-k get deployments
+    note "Check deployments available within the: $(k kcp workspace .)."
+    note ">> k get deployments"
+    k get deployments
 
-note "Moving to the parent workspace which is root"
-note ">> k kcp ws use .."
-k kcp ws use ..
+    note "Moving to the parent workspace which is root"
+    note ">> k kcp ws use .."
+    k kcp ws use ..
 
-check_deployment="error: the server doesn't have a resource type \"deployments\""
-if [ "$check_deployment" == "$(k get deployments 2>&1)" ];then
-  succeeded "Check succeeded as no deployments were found within the: $(k kcp workspace .)."
-else
-  error "Error: deployments found within: $(k kcp workspace .)"
-fi
+    check_deployment="error: the server doesn't have a resource type \"deployments\""
+    if [ "$check_deployment" == "$(k get deployments 2>&1)" ];then
+      succeeded "Check succeeded as no deployments were found within the: $(k kcp workspace .)."
+    else
+      error "Error: deployments found within: $(k kcp workspace .)"
+    fi
+    ;;
+  *)
+    error "Unknown command passed: $ACTION. Please use -h."
+    exit 1
+esac
 
 popd
-
 
 
 
