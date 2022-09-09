@@ -8,7 +8,7 @@ metadata:
   name: green
 spec:
   instanceSelector:
-  - matchLabels:
+    matchLabels:
       color: blue
   resource:
     group: workload.kcp.dev
