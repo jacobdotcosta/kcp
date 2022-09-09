@@ -23,16 +23,17 @@ Commands:
     clean       Clean up the temp directory and remove the kcp plugins
 
 Arguments:
-    -v          Version to be installed of the kcp server. Default: `0.8.0`
+    -v          Version to be installed of the kcp server. Default: `0.8.2`
     -t          Temporary folder where kcp will be installed. Default: `_tmp`
     -c          Name of the k8s cluster where syncer is installed. Default: `kind`
     -w          Workspace to sync resources between kcp and target cluster. Default: `root:my-org`
 ```
+**Remark**: The log of the kcp server started is available at <TEMP_DIR>/kcp-output.log
 
 To setup the demo, then execute the following commands:
 ```bash
 kind create cluster
-./kcp.sh install -v 0.8.0
+./kcp.sh install -v 0.8.2
 ./kcp.sh start
 ```
 
