@@ -55,6 +55,7 @@ Commands:
     install     Install the kcp server locally and kcp kubectl plugins
     start       Start the kcp server
     stop        Stop the kcp server
+    status      Check if KCP is well started
     syncer      Generate and install the syncer component
     clean       Clean up the temp directory and remove the kcp plugins
 
@@ -182,6 +183,14 @@ case $ACTION in
       ./bin/kcp start &> kcp-output.log &
     else
       warn "kcp is not installed !!"
+    fi
+    ;;
+  status)
+    note "Verify if kcp is started"
+    if grep -q "finished bootstrapping root workspace phase 1" kcp-output.log; then
+      succeeded "KCP is well started !"
+    else
+      warn "KCP is not yet started"
     fi
     ;;
   stop)

@@ -19,6 +19,7 @@ Commands:
     install     Install the kcp server locally and kcp kubectl plugins
     start       Start the kcp server
     stop        Stop the kcp server
+    status      Check if KCP is well started
     syncer      Generate and install the syncer component top of a k8s cluster
     clean       Clean up the temp directory and remove the kcp plugins
 
