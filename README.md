@@ -44,7 +44,7 @@ scenario available.
 You can change the path of the project where kcp is installed like the workspace to be used, using the parameters
 ```bash
 Usage:
-  ./demo.sh <scenario> [args]
+  ./demo1.sh <scenario> [args]
 
 Commands:
     s1      Create a workspace, deploy an application, move one level up and verify that no deployments exist as workspaces are isolated

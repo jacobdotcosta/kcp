@@ -25,11 +25,6 @@ do
 done
 echo "KCP is started :-)"
 
-#echo ">> KUBECONFIG=_tmp/.kcp/admin.kubeconfig k kcp ws ."
-#KUBECONFIG=_tmp/.kcp/admin.kubeconfig k kcp ws .
-#echo ">> KUBECONFIG=_tmp/.kcp/admin.kubeconfig k kcp ws create my-org --enter"
-#KUBECONFIG=_tmp/.kcp/admin.kubeconfig k kcp ws create my-org --enter
-
 kubectl ctx kind-cluster1
 ./kcp.sh syncer -w my-org -c cluster1
 
@@ -42,9 +37,6 @@ KUBECONFIG=_tmp/.kcp/admin.kubeconfig k label synctarget cluster2 color=blue
 
 KUBECONFIG=_tmp/.kcp/admin.kubeconfig k delete placement,location --all
 KUBECONFIG=_tmp/.kcp/admin.kubeconfig k apply -f ./k8s
-
-#KUBECONFIG=_tmp/.kcp/admin.kubeconfig k get placement,location,synctarget -A
-#KUBECONFIG=_tmp/.kcp/admin.kubeconfig k kcp ws ..
 
 ./demo.sh s1
 
