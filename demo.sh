@@ -56,7 +56,8 @@ Usage:
   $0 <scenario> [args]
 
 Commands:
-    s1      Create a workspace, deploy an application, move one level up and verify that no deployments exist as workspaces are isolated
+    s1      Create a workspace, deploy a Quarkus application, move one level up and verify that no deployments exist as workspaces are isolated
+    s2      Create a workspace, 2 Placements/locations and apply a label on syncTarget to deploy a Quarkus application on x physical clusters
 
 Arguments:
     -h      Display the help
@@ -126,7 +127,7 @@ case $ACTION in
     note ">> k kcp ws use root:${KCP_WORKSPACE}"
     k kcp ws use root:${KCP_WORKSPACE}
 
-    note "Create a quarkus  app within the workspace: ${KCP_WORKSPACE}"
+    note "Create a quarkus app within the workspace: ${KCP_WORKSPACE}"
     note ">> k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1"
     k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1
     note ">> k rollout status deployment/quarkus"
@@ -136,22 +137,37 @@ case $ACTION in
     note ">> k get deployments"
     k get deployments
 
-    kubectl ctx kind-cluster1
-    quarkus-pod=$(k get po -lapp=quarkus -A -o name)
-    if ( $quarkus-pod == pod*); then
-      ((counter+=1))
-    fi
+    note "Moving to the parent workspace which is root"
+    note ">> k kcp ws use .."
+    k kcp ws use ..
 
-    kubectl ctx kind-cluster2
-    quarkus-pod=$(k get po -lapp=quarkus -A -o name)
-    if ( $quarkus-pod == pod*); then
-      ((counter+=1))
-    fi
-
-    if [ $counter -eq 3 ]; then
-      succeeded "Check succeeded as 2 quarkus applications have been deployed within: $(k kcp workspace .)."
+    check_deployment="error: the server doesn't have a resource type \"deployments\""
+    if [ "$check_deployment" == "$(k get deployments 2>&1)" ];then
+      succeeded "Check succeeded as no deployments were found within the: $(k kcp workspace .)."
     else
-      error "Error: Only $counter quarkus application deployed within: $(k kcp workspace .)"
+      error "Error: deployments found within: $(k kcp workspace .)"
+    fi
+    ;;
+  s2)
+    log "CYAN" "Scenario 2: Create a workspace, 2 Placements/locations and apply a label on syncTarget to deploy a Quarkus application on x physical clusters"
+    note "Moving to the root:${KCP_WORKSPACE} workspace"
+    note ">> k kcp ws use root:${KCP_WORKSPACE}"
+    k kcp ws use root:${KCP_WORKSPACE}
+
+    note "Create a quarkus app within the workspace: ${KCP_WORKSPACE}"
+    note ">> k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1"
+    k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1
+    note ">> k rollout status deployment/quarkus"
+    k rollout status deployment/quarkus
+
+    note "Check deployments available within the: $(k kcp workspace .)."
+    note ">> k get deployments"
+    k get deployments
+
+    if [ "$check_deployment" == "$(k get deployments 2>&1)" ];then
+      succeeded "Check succeeded as no deployments were found within the: $(k kcp workspace .)."
+    else
+      error "Error: deployments found within: $(k kcp workspace .)"
     fi
     ;;
   *)

@@ -38,7 +38,7 @@ KUBECONFIG=_tmp/.kcp/admin.kubeconfig k label synctarget cluster2 color=blue
 KUBECONFIG=_tmp/.kcp/admin.kubeconfig k delete placement,location --all
 KUBECONFIG=_tmp/.kcp/admin.kubeconfig k apply -f ./k8s
 
-./demo.sh s1
+./demo.sh s2
 
 
 

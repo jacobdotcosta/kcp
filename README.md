@@ -47,7 +47,8 @@ Usage:
   ./demo1.sh <scenario> [args]
 
 Commands:
-    s1      Create a workspace, deploy an application, move one level up and verify that no deployments exist as workspaces are isolated
+    s1      Create a workspace, deploy a Quarkus application, move one level up and verify that no deployments exist as workspaces are isolated
+    s2      Create a workspace, 2 Placements/locations and apply a label on syncTarget to deploy a Quarkus application on x physical clusters
 
 Arguments:
     -h      Display the help
