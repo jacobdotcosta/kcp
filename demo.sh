@@ -112,6 +112,7 @@ done
 : ${TEMP_DIR:="_tmp"}
 : ${KCP_CFG_PATH=.kcp/admin.kubeconfig}
 : ${KCP_WORKSPACE=my-org}
+: ${KUBE_CFG=$HOME/.kube/config}
 
 pushd $TEMP_DIR
 export KUBECONFIG=${KCP_CFG_PATH}
@@ -164,19 +165,19 @@ case $ACTION in
     note ">> k get deployments"
     k get deployments
 
-    k ctx kind-cluster1
-    quarkus_pod=$(k get po -lapp=quarkus -A -o name)
+    KUBECONFIG=${KUBE_CFG} k ctx kind-cluster1
+    quarkus_pod=$(KUBECONFIG=${KUBE_CFG} k get po -lapp=quarkus -A -o name)
     if [[ $quarkus_pod == pod* ]]; then
-      ((i+=1))
+      ((counter+=1))
     fi
 
-    k ctx kind-cluster2
-    quarkus_pod=$(k get po -lapp=quarkus -A -o name)
+    KUBECONFIG=${KUBE_CFG} k ctx kind-cluster2
+    quarkus_pod=$(KUBECONFIG=${KUBE_CFG} k get po -lapp=quarkus -A -o name)
     if [[ $quarkus_pod == pod* ]]; then
-      ((i+=1))
+      ((counter+=1))
     fi
 
-    if [ $counter -eq 2 ]; then
+    if [[ $counter -eq 2 ]]; then
       succeeded "Check succeeded as $counter Quarkus Application were found on the physical clusters."
     else
       error "Error: $counter deployments found within: $(k kcp workspace .) and not 2."
