@@ -64,3 +64,50 @@ Create a workspace, deploy an application, move one level up and verify that no 
 During the execution of this scenario `./demo.sh s1`, the following steps will be executed:
 
 ![](img/demo_log.png)
+
+## Scenario 2
+
+This scenario is an extension of the previous as we will still use 1 workspace but connected to 2 distinct physical clusters. 
+When we will deploy an application, it will be deployed on both clusters.
+
+**Warning**: As the command `kubectl kcp workload sync <cluster_name>` only create 1 `Placement` and 1 `Location` CRDs for the target cluster `<cluster_name>`,
+it is then needed to perform some manual steps to create a 2nd placement and Location and to edit the `Synctarget` to use labels able to match the corresponding
+resources
+
+Example:
+
+```yaml
+apiVersion: scheduling.kcp.dev/v1alpha1
+kind: Placement
+metadata:
+  annotations:
+    kcp.dev/cluster: root:my-org
+  name: blue
+spec:
+  locationResource:
+    group: workload.kcp.dev
+    resource: synctargets
+    version: v1alpha1
+  locationSelectors:
+    - matchLabels:
+        color: blue # Location Label to match
+ ...       
+
+apiVersion: scheduling.kcp.dev/v1alpha1
+kind: Location
+metadata:
+  annotations:
+    kcp.dev/cluster: root:my-org
+  labels:
+    color: blue
+  name: blue
+spec:
+  instanceSelector:
+    matchLabels:
+      color: blue # Synctarget label to match
+  resource:
+    group: workload.kcp.dev
+    resource: synctargets
+    version: v1alpha1
+```
+
