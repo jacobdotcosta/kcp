@@ -164,10 +164,22 @@ case $ACTION in
     note ">> k get deployments"
     k get deployments
 
-    if [ "$check_deployment" == "$(k get deployments 2>&1)" ];then
-      succeeded "Check succeeded as no deployments were found within the: $(k kcp workspace .)."
+    k ctx kind-cluster1
+    quarkus_pod=$(k get po -lapp=quarkus -A -o name)
+    if [[ $quarkus_pod == pod* ]]; then
+      ((i+=1))
+    fi
+
+    k ctx kind-cluster2
+    quarkus_pod=$(k get po -lapp=quarkus -A -o name)
+    if [[ $quarkus_pod == pod* ]]; then
+      ((i+=1))
+    fi
+
+    if [ $counter -eq 2 ]; then
+      succeeded "Check succeeded as $counter Quarkus Application were found on the physical clusters."
     else
-      error "Error: deployments found within: $(k kcp workspace .)"
+      error "Error: $counter deployments found within: $(k kcp workspace .) and not 2."
     fi
     ;;
   *)
