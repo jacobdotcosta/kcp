@@ -9,7 +9,7 @@ metadata:
 spec:
   instanceSelector:
     matchLabels:
-      color: blue
+      color: green
   resource:
     group: workload.kcp.dev
     resource: synctargets
