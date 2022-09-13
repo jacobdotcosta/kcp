@@ -130,7 +130,7 @@ service/quarkus created
 ingress.networking.k8s.io/quarkus created
 
 ```
-And next, if you have passed to the script the IP address of the VM running the physical cluster, then you should be able to consume the service
+And next, if you have passed to the script the IP address of the VM running the physical cluster, then you should be able to consume the service using this URL
 ```text
 curl http://quarkus.<IP>.sslip.io/
 ```

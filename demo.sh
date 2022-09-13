@@ -202,6 +202,8 @@ case $ACTION in
 
     note ">> k rollout status deployment/quarkus"
     k rollout status deployment/quarkus
+
+    succeeded ">> Curl the ingress route using this address: http://quarkus.${HOSTNAME_IP}.sslip.io/"
     ;;
   *)
     error "Unknown command passed: $ACTION. Please use -h."
