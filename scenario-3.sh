@@ -2,7 +2,8 @@
 
 shopt -s expand_aliases
 alias k='kubectl'
-hostname_ip="192.168.1.90"
+
+: ${hostname_ip="1.1.1.1"}
 
 if ! command -v helm &> /dev/null; then
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -61,13 +62,6 @@ helm upgrade --install ingress-nginx ingress-nginx \
   --namespace ingress --create-namespace \
   --set controller.service.type=NodePort \
   --set controller.hostPort.enabled=true
-
-# echo "To test ingress, execute the following commands:"
-# echo "kubectl create deployment demo --image=httpd --port=80; kubectl expose deployment demo"
-# echo "kubectl create ingress demo --class=nginx \\"
-# echo "   --rule=\"demo.${hostname_ip}.sslip.io/*=demo:80\""
-# echo "curl http://demo.${hostname_ip}.sslip.io"
-# echo "<html><body><h1>It works!</h1></body></html>"
 
 tail -f _tmp/kcp-output.log | while read LOGLINE
 do
