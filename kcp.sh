@@ -68,6 +68,7 @@ Arguments:
     -t          Temporary folder where kcp will be installed. Default: _tmp
     -c          Name of the k8s cluster where syncer is installed. Default: kind
     -w          Workspace to sync resources between kcp and target cluster. Default: my-org
+    -r          Additional resources to be be sync with the physical cluster
 
 Use $0 <command> -h for more information about a given command.
 EOF
@@ -107,7 +108,7 @@ shift
 ############################################################################
 ## Get the arguments passed to the command
 ############################################################################
-while getopts ":ht:w:v:c:" arg; do
+while getopts ":ht:w:v:c:r:" arg; do
    # note "Arg: ${arg}."
    case ${arg} in
       h) # display Help
@@ -125,6 +126,9 @@ while getopts ":ht:w:v:c:" arg; do
          ;;
       w) # Workspace to sync resources between kcp and target cluster
          KCP_WORKSPACE=${OPTARG}
+         ;;
+      r) # Additional k8s API resources to be sync passed as a list
+         KCP_API_RESOURCES=${OPTARG}
          ;;
       ?) # Invalid arg
          error "Invalid arg was specified -$OPTARG"
@@ -203,14 +207,22 @@ case $ACTION in
     ;;
   syncer)
     note "Move to the target workspace: ${KCP_WORKSPACE}"
+
     wks_not_found="error: workspace \"root:${KCP_WORKSPACE}\" not found"
     if [ "$wks_not_found" == "$(KUBECONFIG=${KCP_CFG_PATH} k kcp ws root:${KCP_WORKSPACE} 2>&1)" ];then
       KUBECONFIG=${KCP_CFG_PATH} k kcp ws create ${KCP_WORKSPACE} --enter
     else
       KUBECONFIG=${KCP_CFG_PATH} k kcp ws root:${KCP_WORKSPACE}
     fi
+
+    # Append resources to the kubectl kcp command if they are passed as argument to the kcp.sh script
+    args=()
+    if [ -n ${KCP_API_RESOURCES} ]; then
+      args+=( '--resources' ${KCP_API_RESOURCES} )
+    fi
+
     note "Generate the syncer yaml resources against the cluster name: ${CLUSTER_NAME}"
-    KUBECONFIG=${KCP_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-${CLUSTER_NAME}.yml
+    KUBECONFIG=${KCP_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} ${args[@]} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-${CLUSTER_NAME}.yml
     note "Deploy kcp syncer on kind"
     KUBECONFIG=${KUBE_CFG_PATH} k apply -f "syncer-${CLUSTER_NAME}.yml"
     warn "Syncer can be deleted using the command: kubectl delete -f ${TEMP_DIR}/syncer-${CLUSTER_NAME}.yml"
