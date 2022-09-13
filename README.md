@@ -28,6 +28,7 @@ Arguments:
     -t          Temporary folder where kcp will be installed. Default: `_tmp`
     -c          Name of the k8s cluster where syncer is installed. Default: `kind`
     -w          Workspace to sync resources between kcp and target cluster. Default: `root:my-org`
+    -r          Additional resources to be be sync with the physical cluster.
 ```
 **Remark**: The log of the kcp server started is available at <TEMP_DIR>/kcp-output.log
 
@@ -49,6 +50,7 @@ Usage:
 Commands:
     s1      Create a workspace, deploy a Quarkus application, move one level up and verify that no deployments exist as workspaces are isolated
     s2      Create a workspace, 2 Placements/locations and apply a label on syncTarget to deploy a Quarkus application on x physical clusters
+    s3      Create a workspace, sync an additional resource for Ingress and deploy a Quarkus application 
 
 Arguments:
     -h      Display the help
@@ -112,4 +114,26 @@ spec:
     resource: synctargets
     version: v1alpha1
 ```
+
+## Scenario 3
+
+The purpose of this scenario is to create a workspace, configure kcp to be able to sync additional resources such as: Ingress, Services and finally to deploy a Quarkus application.
+The additional k8s resources are passed to the kcp.sh script using this command:
+```bash
+./kcp.sh syncer -w my-org -c cluster1 -r ingresses.networking.k8s.io,services
+```
+If the deployment succeeds, then you will be able to see these messages logged if you execute the end to end scenario `./scenario-3.sh`
+```text
+NOTE: >> k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1
+deployment.apps/quarkus created
+service/quarkus created
+ingress.networking.k8s.io/quarkus created
+
+```
+And next, if you have passed to the script the IP address of the VM running the physical cluster, then you should be able to consume the service
+```text
+curl http://quarkus.<IP>.sslip.io/
+```
+
+
 
