@@ -58,11 +58,13 @@ Usage:
 Commands:
     s1      Create a workspace, deploy a Quarkus application, move one level up and verify that no deployments exist as workspaces are isolated
     s2      Create a workspace, 2 Placements/locations and apply a label on syncTarget to deploy a Quarkus application on x physical clusters
+    s3      Create a workspace, sync an additional resource for Ingress and deploy a Quarkus application
 
 Arguments:
     -h      Display the help
     -t      Temporary folder where kcp is running. Default: _tmp
     -w      Workspace to be used for the demo. Default: my-org
+    -v      hostname or ip address of the physical cluster to be used to access ingress routes
 
 Use $0 <scenario> -h for more information about a given scenario.
 
@@ -97,6 +99,9 @@ while getopts ":ht:w:v:c:" arg; do
       w) # Workspace to sync resources between kcp and target cluster
          KCP_WORKSPACE=${OPTARG}
          ;;
+      v) #
+         HOSTNAME_IP=${OPTARG}
+        ;;
       ?) # Invalid arg
          error "Invalid arg was specified -$OPTARG"
          echo
@@ -182,6 +187,21 @@ case $ACTION in
     else
       error "Error: $counter deployments found within: $(k kcp workspace .) and not 2."
     fi
+    ;;
+  s3)
+    log "CYAN" "Scenario 2: Create a workspace, 2 Placements/locations and apply a label on syncTarget to deploy a Quarkus application on x physical clusters"
+    note "Moving to the root:${KCP_WORKSPACE} workspace"
+    note ">> k kcp ws use root:${KCP_WORKSPACE}"
+    k kcp ws use root:${KCP_WORKSPACE}
+
+    note "Create a quarkus app within the workspace: ${KCP_WORKSPACE}"
+    note ">> k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1"
+    k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1
+    k create service clusterip quarkus --tcp 80:8080
+    k create ingress quarkus --class=nginx --rule="quarkus.${HOSTNAME_IP}.sslip.io/*=quarkus:80"
+
+    note ">> k rollout status deployment/quarkus"
+    k rollout status deployment/quarkus
     ;;
   *)
     error "Unknown command passed: $ACTION. Please use -h."
