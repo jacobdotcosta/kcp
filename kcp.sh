@@ -216,13 +216,14 @@ case $ACTION in
     fi
 
     # Append resources to the kubectl kcp command if they are passed as argument to the kcp.sh script
-    args=()
     if [ -n ${KCP_API_RESOURCES} ]; then
-      args+=( '--resources' ${KCP_API_RESOURCES} )
+      KUBECONFIG=${KCP_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} --resources ${KCP_API_RESOURCES} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-${CLUSTER_NAME}.yml
+      else
+      KUBECONFIG=${KCP_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-${CLUSTER_NAME}.yml
     fi
 
     note "Generate the syncer yaml resources against the cluster name: ${CLUSTER_NAME}"
-    KUBECONFIG=${KCP_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} ${args[@]} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-${CLUSTER_NAME}.yml
+    KUBECONFIG=${KCP_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-${CLUSTER_NAME}.yml
     note "Deploy kcp syncer on kind"
     KUBECONFIG=${KUBE_CFG_PATH} k apply -f "syncer-${CLUSTER_NAME}.yml"
     warn "Syncer can be deleted using the command: kubectl delete -f ${TEMP_DIR}/syncer-${CLUSTER_NAME}.yml"
