@@ -218,7 +218,7 @@ case $ACTION in
     # Append resources to the kubectl kcp command if they are passed as argument to the kcp.sh script
     if [ -n ${KCP_API_RESOURCES} ]; then
       KUBECONFIG=${KCP_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} --resources ${KCP_API_RESOURCES} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-${CLUSTER_NAME}.yml
-      else
+    else
       KUBECONFIG=${KCP_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-${CLUSTER_NAME}.yml
     fi
 
