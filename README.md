@@ -8,6 +8,7 @@ Next, you can create workspaces and start to setup logical clusters that kcp wil
 - kind is installed (if you plan to use a kind k8s cluster)
 - A k8s cluster is up and running (e.g `kind create cluster`, ...)
 - [kubectx](https://github.com/ahmetb/kubectx)
+- helm installed 
 
 # How to play with kcp
 

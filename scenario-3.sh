@@ -71,16 +71,16 @@ kubectl ctx kind-cluster1
 
 note "Moving to the root:${KCP_WORKSPACE} workspace"
 note ">> k kcp ws use root:${KCP_WORKSPACE}"
-k kcp ws use root:${KCP_WORKSPACE}
+KUBECONFIG=${TEMP_DIR}/${KCP_CFG_PATH} k kcp ws use root:${KCP_WORKSPACE}
 
 note "Create a quarkus app within the workspace: ${KCP_WORKSPACE}"
 note ">> k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1"
-k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1
-k create service clusterip quarkus --tcp 80:8080
-k create ingress quarkus --class=nginx --rule="quarkus.${HOSTNAME_IP}.sslip.io/*=quarkus:80"
+KUBECONFIG=${TEMP_DIR}/${KCP_CFG_PATH} k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1
+KUBECONFIG=${TEMP_DIR}/${KCP_CFG_PATH} k create service clusterip quarkus --tcp 80:8080
+KUBECONFIG=${TEMP_DIR}/${KCP_CFG_PATH} k create ingress quarkus --class=nginx --rule="quarkus.${HOSTNAME_IP}.sslip.io/*=quarkus:80"
 
 note ">> k rollout status deployment/quarkus"
-k rollout status deployment/quarkus
+KUBECONFIG=${TEMP_DIR}/${KCP_CFG_PATH} k rollout status deployment/quarkus
 
 succeeded ">> Curl the ingress route using this address: http://quarkus.${HOSTNAME_IP}.sslip.io/"
 
