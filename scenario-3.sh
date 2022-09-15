@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-set -x
+set -e
+
 shopt -s expand_aliases
 alias k='kubectl'
 
