@@ -4,7 +4,7 @@ Table of Contents
 * [Introduction](#introduction)
 * [Prerequisite](#prerequisite)
 * [How to play with kcp](#how-to-play-with-kcp)
-* [Scenario](#scenario)
+* [KCP scenario evaluated](#kcp-scenario-evaluated)
 * [Scenario 1 : One workspace](#scenario-1--one-workspace)
     * [Step-by-Step](#step-by-step)
     * [End-to-end script](#end-to-end-script)
@@ -59,7 +59,7 @@ kind create cluster
 
 Next, in a second terminal, you can execute one of the following scenarios described hereafter.
 
-# Scenario
+# KCP scenario evaluated
 
 When you plan to use the `end to end` approach and the corresponding `scenario-*.sh` bash script in a terminal, it is possible to specify different parameters.
 Use the arg `-h` to get the help: `scenario-*.sh -h`.
