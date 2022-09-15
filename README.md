@@ -43,12 +43,16 @@ Next, in a second terminal, you can execute one of the following scenarios descr
 
 # Scenario
 
-When you plan to use the `end to end` approach and the corresponding `scenario-*.sh` bash script in terminal, it is possible to specify different parameters.
+When you plan to use the `end to end` approach and the corresponding `scenario-*.sh` bash script in a terminal, it is possible to specify different parameters.
 Use the arg `-h` to get the help: `scenario-*.sh -h`.
 
 # Scenario 1
 
-Objective: Create a workspace, deploy an application, move one level up and verify that no deployments exist as workspaces are isolated
+Objective: 
+- Create a kcp workspace, 
+- Deploy a Quarkus application, 
+- Access the application deployed on the physical cluster (using kubectl proxy)
+- Move the workspace one level up (e.g root) and verify that no deployments exist as workspaces are isolated
 
 ## Step-by-Step
 
@@ -56,7 +60,7 @@ TODO
 
 ## End-to-end script
 
-To execute the scenario end to edn, launch in a terminal the following script: `./scenario-1.sh`. If it succeeds, then you will see the following messages:
+To execute the scenario end to end, launch in a terminal the following script: `./scenario-1.sh`. If it succeeds, then you will see the following messages:
 
 ![](img/demo_log.png)
 
