@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -ex
+set -e
 
 # Defining some colors for output
 NC='\033[0m' # No Color

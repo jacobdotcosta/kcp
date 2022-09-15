@@ -37,7 +37,37 @@ KUBECONFIG=_tmp/.kcp/admin.kubeconfig k label synctarget cluster2 color=blue
 KUBECONFIG=_tmp/.kcp/admin.kubeconfig k delete placement,location --all
 KUBECONFIG=_tmp/.kcp/admin.kubeconfig k apply -f ./k8s
 
-./demo.sh s2
+note "Moving to the root:${KCP_WORKSPACE} workspace"
+note ">> k kcp ws use root:${KCP_WORKSPACE}"
+k kcp ws use root:${KCP_WORKSPACE}
+
+note "Create a quarkus app within the workspace: ${KCP_WORKSPACE}"
+note ">> k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1"
+k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1
+note ">> k rollout status deployment/quarkus"
+k rollout status deployment/quarkus
+
+note "Check deployments available within the: $(k kcp workspace .)."
+note ">> k get deployments"
+k get deployments
+
+KUBECONFIG=${KUBE_CFG} k ctx kind-cluster1
+quarkus_pod=$(KUBECONFIG=${KUBE_CFG} k get po -lapp=quarkus -A -o name)
+if [[ $quarkus_pod == pod* ]]; then
+  ((counter+=1))
+fi
+
+KUBECONFIG=${KUBE_CFG} k ctx kind-cluster2
+quarkus_pod=$(KUBECONFIG=${KUBE_CFG} k get po -lapp=quarkus -A -o name)
+if [[ $quarkus_pod == pod* ]]; then
+  ((counter+=1))
+fi
+
+if [[ $counter -eq 2 ]]; then
+  succeeded "Check succeeded as $counter Quarkus Application were found on the physical clusters."
+else
+  error "Error: $counter deployments found within: $(k kcp workspace .) and not 2."
+fi
 
 
 
