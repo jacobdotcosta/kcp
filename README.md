@@ -50,10 +50,10 @@ Use the arg `-h` to get the help: `scenario-*.sh -h`.
 # Scenario 1
 
 Objective: 
-- Create a kcp workspace, 
-- Deploy a Quarkus application, 
-- Access the application deployed on the physical cluster (using kubectl proxy)
-- Move the workspace one level up (e.g root) and verify that no deployments exist as workspaces are isolated
+- Create a kcp workspace `root:my-org` and move the context to this workspace, 
+- Deploy a Quarkus application within the workspace, 
+- Access the application deployed on the physical cluster (e.g: kubectl proxy)
+- Move the workspace one level up (e.g `root`) and verify that no deployments exist as workspaces are isolated
 
 ## Step-by-Step
 
