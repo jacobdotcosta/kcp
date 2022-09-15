@@ -30,26 +30,26 @@ kubectl ctx kind-cluster1
 kubectl ctx kind-cluster2
 ./kcp.sh syncer -w my-org -c cluster2
 
-KUBECONFIG=_tmp/.kcp/admin.kubeconfig k kcp ws root:my-org
-KUBECONFIG=_tmp/.kcp/admin.kubeconfig k label synctarget cluster1 color=green
-KUBECONFIG=_tmp/.kcp/admin.kubeconfig k label synctarget cluster2 color=blue
+KUBECONFIG=${TEMP_DIR}/${KCP_CFG_PATH} k kcp ws root:my-org
+KUBECONFIG=${TEMP_DIR}/${KCP_CFG_PATH} k label synctarget cluster1 color=green
+KUBECONFIG=${TEMP_DIR}/${KCP_CFG_PATH} k label synctarget cluster2 color=blue
 
-KUBECONFIG=_tmp/.kcp/admin.kubeconfig k delete placement,location --all
-KUBECONFIG=_tmp/.kcp/admin.kubeconfig k apply -f ./k8s
+KUBECONFIG=${TEMP_DIR}/${KCP_CFG_PATH} k delete placement,location --all
+KUBECONFIG=${TEMP_DIR}/${KCP_CFG_PATH} k apply -f ./k8s
 
 note "Moving to the root:${KCP_WORKSPACE} workspace"
 note ">> k kcp ws use root:${KCP_WORKSPACE}"
-KUBECONFIG=_tmp/.kcp/admin.kubeconfig k kcp ws use root:${KCP_WORKSPACE}
+KUBECONFIG=${TEMP_DIR}/${KCP_CFG_PATH} k kcp ws use root:${KCP_WORKSPACE}
 
 note "Create a quarkus app within the workspace: ${KCP_WORKSPACE}"
 note ">> k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1"
-KUBECONFIG=_tmp/.kcp/admin.kubeconfig k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1
+KUBECONFIG=${TEMP_DIR}/${KCP_CFG_PATH} k create deployment quarkus --image=quay.io/rhdevelopers/quarkus-demo:v1
 note ">> k rollout status deployment/quarkus"
-KUBECONFIG=_tmp/.kcp/admin.kubeconfig k rollout status deployment/quarkus
+KUBECONFIG=${TEMP_DIR}/${KCP_CFG_PATH} k rollout status deployment/quarkus
 
-note "Check deployments available within the: $(KUBECONFIG=_tmp/.kcp/admin.kubeconfig k kcp workspace .)."
+note "Check deployments available within the: $(KUBECONFIG=${TEMP_DIR}/${KCP_CFG_PATH} k kcp workspace .)."
 note ">> k get deployments"
-KUBECONFIG=_tmp/.kcp/admin.kubeconfig k get deployments
+KUBECONFIG=${TEMP_DIR}/${KCP_CFG_PATH} k get deployments
 
 KUBECONFIG=${KUBE_CFG} k ctx kind-cluster1
 note "Current ws is: $(KUBECONFIG=${KUBE_CFG} k kcp workspace .)"
