@@ -1,3 +1,20 @@
+Table of Contents
+=================
+
+* [Introduction](#introduction)
+* [Prerequisite](#prerequisite)
+* [How to play with kcp](#how-to-play-with-kcp)
+* [Scenario](#scenario)
+* [Scenario 1 : One workspace](#scenario-1--one-workspace)
+    * [Step-by-Step](#step-by-step)
+    * [End-to-end script](#end-to-end-script)
+* [Scenario 2 : One workspace but 2 physical clusters](#scenario-2--one-workspace-but-2-physical-clusters)
+    * [Step-by-Step](#step-by-step-1)
+    * [End-to-end script](#end-to-end-script-1)
+* [Scenario 3 : One workspace with additional CRDs (ingress, service)](#scenario-3--one-workspace-with-additional-crds-ingress-service)
+    * [Step-by-Step](#step-by-step-2)
+    * [End-to-end script](#end-to-end-script-2)
+
 # Introduction
 
 In order to use, play with [kcp](https://github.com/kcp-dev/kcp) it is needed to install different tools: kcp, kubectl kcp plugins and launch it.
@@ -47,7 +64,7 @@ Next, in a second terminal, you can execute one of the following scenarios descr
 When you plan to use the `end to end` approach and the corresponding `scenario-*.sh` bash script in a terminal, it is possible to specify different parameters.
 Use the arg `-h` to get the help: `scenario-*.sh -h`.
 
-# Scenario 1
+# Scenario 1 : One workspace
 
 Objective: 
 - Create a kcp workspace `root:my-org` and move the context to this workspace, 
@@ -65,7 +82,7 @@ To execute the scenario end to end, launch in a terminal the following script: `
 
 ![](img/demo_log.png)
 
-# Scenario 2
+# Scenario 2 : One workspace but 2 physical clusters
 
 Objective: This scenario is an extension of the previous as we continue to use 1 workspace but where we would like to place the deployment on 2 distinct physical clusters. 
 When we will deploy an application, it will be deployed on both clusters as kcp will use the [matching mechanism](https://github.com/kcp-dev/kcp/blob/main/pkg/apis/scheduling/v1alpha1/types_placement.go#L64-L67) to find for a placement,
@@ -118,7 +135,7 @@ TODO
 
 TODO
 
-# Scenario 3
+# Scenario 3 : One workspace with additional CRDs (ingress, service)
 
 Objective: The purpose of this scenario is to create a workspace, configure kcp to be able to sync additional resources such as: Ingress, Services and finally to deploy a Quarkus application.
 
