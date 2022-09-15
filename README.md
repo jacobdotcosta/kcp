@@ -61,7 +61,10 @@ Next, in a second terminal, you can execute one of the following scenarios descr
 
 # KCP scenario evaluated
 
-When you plan to use the `end to end` approach and the corresponding `scenario-*.sh` bash script in a terminal, it is possible to specify different parameters.
+This section covers different scenario which have been tested with kcp and that you could play using either the manual or the end-to-end bash script.
+They gradually increase the complexity to validate a deployment across multiple clusters, using more API (ingress, service).
+
+Remark: When you plan to use the end-to-end `scenario-*.sh` bash script in a terminal, it is possible to specify different parameters.
 Use the arg `-h` to get the help: `scenario-*.sh -h`.
 
 # Scenario 1 : One workspace
