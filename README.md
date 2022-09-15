@@ -1,14 +1,14 @@
-## Introduction
+# Introduction
 
 In order to use, play with [kcp](https://github.com/kcp-dev/kcp) it is needed to install different tools: kcp, kubectl kcp plugins and launch it.
 Next, you can create workspaces and start to setup logical clusters that kcp will manage on physical clusters.
 
-## Prerequisite
+# Prerequisite
 
 - kind is installed (if you plan to use a kind k8s cluster)
 - A k8s cluster is up and running (e.g `kind create cluster`, ...)
 
-## How to play with kcp
+# How to play with kcp
 
 Different commands have been implemented in order to perform using the bash script `./kcp.sh`, the following actions:
 ```bash
@@ -32,45 +32,37 @@ Arguments:
 ```
 **Remark**: The log of the kcp server started is available at <TEMP_DIR>/kcp-output.log
 
-To setup the demo, then execute the following commands:
+To setup a demo, then execute by example the following commands :
 ```bash
 kind create cluster
 ./kcp.sh install -v 0.8.2
 ./kcp.sh start
 ```
 
-Next, in a second terminal, you will deploy a kcp syncer `./kcp.sh syncer -w my-org` and next run the `./demo.sh` script using the different
-scenario available.
+Next, in a second terminal, you can execute one of the following scenarios described hereafter.
 
-You can change the path of the project where kcp is installed like the workspace to be used, using the parameters
-```bash
-Usage:
-  ./demo1.sh <scenario> [args]
+# Scenario
 
-Commands:
-    s1      Create a workspace, deploy a Quarkus application, move one level up and verify that no deployments exist as workspaces are isolated
-    s2      Create a workspace, 2 Placements/locations and apply a label on syncTarget to deploy a Quarkus application on x physical clusters
-    s3      Create a workspace, sync an additional resource for Ingress and deploy a Quarkus application 
+When you plan to use the `end to end` approach and the corresponding `scenario-*.sh` bash script in terminal, it is possible to specify different parameters.
+Use the arg `-h` to get the help: `scenario-*.sh -h`.
 
-Arguments:
-    -h      Display the help
-    -t      Temporary folder where kcp is running. Default: _tmp
-    -w      Workspace to be used for the demo. Default: my-org
+# Scenario 1
 
-Use $demo.sh <scenario> -h for more information about a given scenario.
-```
+Objective: Create a workspace, deploy an application, move one level up and verify that no deployments exist as workspaces are isolated
 
-## Scenario 1
+## Step-by-Step
 
-Create a workspace, deploy an application, move one level up and verify that no deployments exist as workspaces are isolated
+TODO
 
-During the execution of this scenario `./demo.sh s1`, the following steps will be executed:
+## End-to-end script
+
+To execute the scenario end to edn, launch in a terminal the following script: `./scenario-1.sh`. If it succeeds, then you will see the following messages:
 
 ![](img/demo_log.png)
 
-## Scenario 2
+# Scenario 2
 
-This scenario is an extension of the previous as we continue to use 1 workspace but where we would like to place the deployment on 2 distinct physical clusters. 
+Objective: This scenario is an extension of the previous as we continue to use 1 workspace but where we would like to place the deployment on 2 distinct physical clusters. 
 When we will deploy an application, it will be deployed on both clusters as kcp will use the [matching mechanism](https://github.com/kcp-dev/kcp/blob/main/pkg/apis/scheduling/v1alpha1/types_placement.go#L64-L67) to find for a placement,
 its location and ultimately the syncTarget related to the [locations](https://github.com/kcp-dev/kcp/blob/main/pkg/apis/scheduling/v1alpha1/types_location.go#L32-L37) and used to sync the resources with the physical clusters.
 
@@ -114,10 +106,21 @@ spec:
     resource: synctargets
     version: v1alpha1
 ```
+## Step-by-Step
+TODO
 
-## Scenario 3
+## End-to-end script
 
-The purpose of this scenario is to create a workspace, configure kcp to be able to sync additional resources such as: Ingress, Services and finally to deploy a Quarkus application.
+TODO
+
+# Scenario 3
+
+Objective: The purpose of this scenario is to create a workspace, configure kcp to be able to sync additional resources such as: Ingress, Services and finally to deploy a Quarkus application.
+
+## Step-by-Step
+
+TODO
+
 The additional k8s resources are passed to the kcp.sh script using this command:
 ```bash
 ./kcp.sh syncer -w my-org -c cluster1 -r ingresses.networking.k8s.io,services
@@ -134,5 +137,6 @@ And next, if you have passed to the script the IP address of the VM running the 
 curl http://quarkus.<IP>.sslip.io/
 ```
 
+## End-to-end script
 
-
+TODO

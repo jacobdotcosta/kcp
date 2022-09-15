@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 
-shopt -s expand_aliases
-alias k='kubectl'
-
 #
 # End to end scenario 2
 #
-./kcp.sh stop
-rm -rf _tmp/
-./kcp.sh install -v 0.8.2
+
+source common.sh
+
+./kcp.sh clean
+./kcp.sh install -v ${KCP_VERSION}
 ./kcp.sh start
 
 # Cluster 1 => color: green label

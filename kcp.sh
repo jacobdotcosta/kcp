@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 
 # Defining some colors for output
 NC='\033[0m' # No Color
@@ -49,6 +49,8 @@ log() {
   MSG="${@:2}"
   echo; repeat_char ${1} '#'; msg ${1} ${MSG}; repeat_char ${1} '#'; echo
 }
+
+exists() { [[ -f $1 ]]; }
 
 print_help() {
 cat << EOF
@@ -143,11 +145,12 @@ done
 ## Set default values when no optional flags are passed
 #######################################################
 : ${TEMP_DIR:="_tmp"}
-: ${KCP_VERSION=0.8.2}
-: ${KCP_CFG_PATH=.kcp/admin.kubeconfig}
-: ${KUBE_CFG_PATH=$HOME/.kube/config}
-: ${CLUSTER_NAME=kind}
-: ${KCP_WORKSPACE=my-org}
+: ${KCP_VERSION:=0.8.2}
+: ${KCP_CFG_PATH:=.kcp/admin.kubeconfig}
+: ${KCP_WORKSPACE:=my-org}
+: ${KCP_API_RESOURCES:=""}
+: ${KUBE_CFG_PATH:=$HOME/.kube/config}
+: ${CLUSTER_NAME:=kind}
 
 #######################################################
 ## Set local default values
@@ -216,11 +219,11 @@ case $ACTION in
     fi
 
     note "Generate the syncer yaml resources against the cluster name: ${CLUSTER_NAME}"
-    if [ -n ${KCP_API_RESOURCES} ]; then
-      note "Append some additonal resources to command: ${KCP_API_RESOURCES}"
-      KUBECONFIG=${KCP_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} --resources ${KCP_API_RESOURCES} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-${CLUSTER_NAME}.yml
-    else
+    if [ "${KCP_API_RESOURCES}" = "" ]; then
       KUBECONFIG=${KCP_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-${CLUSTER_NAME}.yml
+    else
+      note "Append some additional resources to command: ${KCP_API_RESOURCES}."
+      KUBECONFIG=${KCP_CFG_PATH} k kcp workload sync ${CLUSTER_NAME} --resources ${KCP_API_RESOURCES} --syncer-image ghcr.io/kcp-dev/kcp/syncer:v${KCP_VERSION} -o syncer-${CLUSTER_NAME}.yml
     fi
 
     note "Deploy kcp syncer on kind"
@@ -233,17 +236,23 @@ case $ACTION in
   clean)
     note "Stopping kcp..."
     pkill kcp || true
-    note "Removing on the cluster the syncer deployed"
-    for file in syncer-*.yml; do
-      KUBECONFIG=${KUBE_CFG_PATH} k delete -f $file
-    done
+
+    if exists syncer-*.yml; then
+      note "Removing on the cluster the syncer deployed"
+      for file in syncer-*.yml; do
+        KUBECONFIG=${KUBE_CFG_PATH} k delete -f $file --ignore-not-found
+      done
+    fi
+
     note "Deleting the kcp-* namespaces"
     for ns in $(KUBECONFIG=${KUBE_CFG_PATH} k get ns -linternal.workload.kcp.dev/cluster -o name);
     do
-      KUBECONFIG=${KUBE_CFG_PATH} k delete $ns
+      KUBECONFIG=${KUBE_CFG_PATH} k delete $ns --ignore-not-found
     done
+
     note "Removing kubectl kcp plugins"
     rm /usr/local/bin/kubectl-{kcp,ws,workspaces} || true
+
     note "Deleting temp directory content"
     rm -rf .kcp
     rm -r *

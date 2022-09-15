@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
-set -e
+#
+# End to end scenario 3
+#
 
-shopt -s expand_aliases
-alias k='kubectl'
-
-: ${hostname_ip="1.1.1.1"}
+source common.sh
 
 if ! command -v helm &> /dev/null; then
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -20,12 +19,8 @@ if [[ ${HELM_VERSION} < "v3.0.0" ]]; then
   exit 1
 fi
 
-#
-# End to end scenario 3
-#
-./kcp.sh stop
-rm -rf _tmp/
-./kcp.sh install -v 0.8.2
+./kcp.sh clean
+./kcp.sh install -v ${KCP_VERSION}
 ./kcp.sh start
 
 # Kind cluster config template
@@ -74,7 +69,7 @@ echo "KCP is started :-)"
 kubectl ctx kind-cluster1
 ./kcp.sh syncer -w my-org -c cluster1 -r ingresses.networking.k8s.io,services
 
-./demo.sh s3 -v ${hostname_ip}
+./demo.sh s3 -i ${HOSTNAME_IP}
 
 
 
