@@ -7,17 +7,10 @@ Table of Contents
   * [Prerequisite](#prerequisite)
   * [How to play with kcp](#how-to-play-with-kcp)
   * [Scenario 1 : One workspace](#scenario-1--one-workspace)
-    * [Step-by-Step](#step-by-step)
-    * [End-to-end script](#end-to-end-script)
   * [Scenario 2 : One workspace but 2 physical clusters](#scenario-2--one-workspace-but-2-physical-clusters)
-    * [Step-by-Step](#step-by-step-1)
-    * [End-to-end script](#end-to-end-script-1)
   * [Scenario 3 : One workspace with additional CRDs (ingress, service)](#scenario-3--one-workspace-with-additional-crds-ingress-service)
-    * [Step-by-Step](#step-by-step-2)
-    * [End-to-end script](#end-to-end-script-2)
 * [Skupper](#skupper)
   * [Scenario 1 : Getting started](#scenario-1--getting-started)
-    * [End-to-end script](#end-to-end-script-3)
 
 # Introduction
 

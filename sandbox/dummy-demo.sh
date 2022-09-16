@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. play-demo.sh
+. ../play-demo.sh
 
 DEMO_PROMPT=">$ "
 

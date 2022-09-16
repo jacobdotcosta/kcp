@@ -2,3 +2,4 @@
 _tmp/
 .kcp/
 /test.sh
+/sandbox/test.sh
