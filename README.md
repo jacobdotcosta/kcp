@@ -5,10 +5,10 @@ Next, you can create workspaces and start to setup logical clusters that kcp wil
 
 # Prerequisite
 
-- kind is installed (if you plan to use a kind k8s cluster)
+- [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) is installed (if you plan to use a kind k8s cluster)
 - A k8s cluster is up and running (e.g `kind create cluster`, ...)
 - [kubectx](https://github.com/ahmetb/kubectx)
-- helm installed 
+- [helm installed](https://helm.sh/docs/intro/install/) 
 
 # How to play with kcp
 
