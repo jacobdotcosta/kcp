@@ -182,3 +182,9 @@ where you pass as env var the IP address of your local machine running the clust
 **Remark**: The `HOST_NAME` will be used to configure the ingress routes to access the `skupper` console and frontend. Check the messages logged to get the URLs ;-)
 
 ![](img/skupper-scenario-1.png)
+
+If the frontend can access the backend service, then you should be able to see such `Hello world` messages wihin yiur browser
+
+![](img/skupper_frontend_scenario-1.png)
+
+
