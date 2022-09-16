@@ -10,7 +10,7 @@
 : ${HOST_MACHINE:=1.1.1.1.sslip.io}
 
 # Parameters to play the scenario
-TYPE_SPEED=30
+TYPE_SPEED=50
 NO_WAIT=true
 
 SKUPPER_DIR="$(cd $(dirname "${BASH_SOURCE}") && pwd)"
@@ -99,7 +99,7 @@ note "Skupper admin console password is: ${skupper_pwd}"
 pe "skupper token create ~/west.token"
 pe "k create deployment frontend --image quay.io/skupper/hello-world-frontend"
 pe "k expose deployment frontend --port 8080 --type ClusterIP"
-pe "k create ingress frontend --class=nginx --rule=\"frontend.${HOST_MACHINE}/*=frontend:80\""
+pe "k create ingress frontend --class=nginx --rule=\"frontend.${HOST_MACHINE}/*=frontend:8080\""
 
 pe "k create ns ${NAMESPACE2}"
 pe "kubectl config set-context --current --namespace ${NAMESPACE2}"
@@ -113,4 +113,4 @@ pe "skupper link create ~/west.token"
 pe "k create deployment backend --image quay.io/skupper/hello-world-backend --replicas 3"
 pe "skupper expose deployment/backend --port 8080"
 
-succeeded "Frontend is available using this url in your browser: frontend.${HOST_MACHINE}"
+succeeded "Frontend is available using this url in your browser: http://frontend.${HOST_MACHINE}"
