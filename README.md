@@ -37,7 +37,7 @@ Use the arg `-h` to get the help: `scenario-*.sh -h`.
 
 ## How to play with kcp
 
-Different commands have been implemented in order to perform using the bash script `./kcp.sh`, the following actions:
+To simplify our life when we play with the kcp server, we have developed the bash script `./kcp.sh` able to support the following actions:
 ```bash
 Usage:
   ./kcp.sh <command> [args]
