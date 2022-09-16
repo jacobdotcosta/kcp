@@ -1,32 +1,47 @@
 Table of Contents
 =================
 
+* [Table of Contents](#table-of-contents)
 * [Introduction](#introduction)
-* [Prerequisite](#prerequisite)
-* [How to play with kcp](#how-to-play-with-kcp)
-* [KCP scenario evaluated](#kcp-scenario-evaluated)
-* [Scenario 1 : One workspace](#scenario-1--one-workspace)
+* [KCP scenario](#kcp-scenario)
+  * [Prerequisite](#prerequisite)
+  * [How to play with kcp](#how-to-play-with-kcp)
+  * [Scenario 1 : One workspace](#scenario-1--one-workspace)
     * [Step-by-Step](#step-by-step)
     * [End-to-end script](#end-to-end-script)
-* [Scenario 2 : One workspace but 2 physical clusters](#scenario-2--one-workspace-but-2-physical-clusters)
+  * [Scenario 2 : One workspace but 2 physical clusters](#scenario-2--one-workspace-but-2-physical-clusters)
     * [Step-by-Step](#step-by-step-1)
     * [End-to-end script](#end-to-end-script-1)
-* [Scenario 3 : One workspace with additional CRDs (ingress, service)](#scenario-3--one-workspace-with-additional-crds-ingress-service)
+  * [Scenario 3 : One workspace with additional CRDs (ingress, service)](#scenario-3--one-workspace-with-additional-crds-ingress-service)
     * [Step-by-Step](#step-by-step-2)
     * [End-to-end script](#end-to-end-script-2)
+* [Skupper](#skupper)
+  * [Scenario 1 : Getting started](#scenario-1--getting-started)
+    * [End-to-end script](#end-to-end-script-3)
 
 # Introduction
 
-In order to use, play with [kcp](https://github.com/kcp-dev/kcp) it is needed to install different tools: kcp, kubectl kcp plugins and launch it.
+This project has been designed in order to evaluate [kcp](https://github.com/kcp-dev/kcp) like [skupper](https://skupper.io) and how they could be used together
+
+In order to play with [kcp](https://github.com/kcp-dev/kcp) it is needed to install different tools: kcp, kubectl kcp plugins and launch it.
 Next, you can create workspaces and start to setup logical clusters that kcp will manage on physical clusters.
 
-# Prerequisite
+# KCP scenario
+
+This section covers different scenario which have been tested with kcp and that you could play using either the manual or the end-to-end bash script.
+They gradually increase the complexity to validate a deployment across multiple clusters, using more API (ingress, service).
+
+Remark: When you plan to use the end-to-end `scenario-*.sh` bash script in a terminal, it is possible to specify different parameters.
+Use the arg `-h` to get the help: `scenario-*.sh -h`.
+
+
+## Prerequisite
 
 - kind is installed (if you plan to use a kind k8s cluster)
 - A k8s cluster is up and running (e.g `kind create cluster`, ...)
 - [kubectx](https://github.com/ahmetb/kubectx)
 
-# How to play with kcp
+## How to play with kcp
 
 Different commands have been implemented in order to perform using the bash script `./kcp.sh`, the following actions:
 ```bash
@@ -59,15 +74,7 @@ kind create cluster
 
 Next, in a second terminal, you can execute one of the following scenarios described hereafter.
 
-# KCP scenario evaluated
-
-This section covers different scenario which have been tested with kcp and that you could play using either the manual or the end-to-end bash script.
-They gradually increase the complexity to validate a deployment across multiple clusters, using more API (ingress, service).
-
-Remark: When you plan to use the end-to-end `scenario-*.sh` bash script in a terminal, it is possible to specify different parameters.
-Use the arg `-h` to get the help: `scenario-*.sh -h`.
-
-# Scenario 1 : One workspace
+## Scenario 1 : One workspace
 
 Objective: 
 - Create a kcp workspace `root:my-org` and move the context to this workspace, 
@@ -75,17 +82,17 @@ Objective:
 - Access the application deployed on the physical cluster (e.g: kubectl proxy)
 - Move the workspace one level up (e.g `root`) and verify that no deployments exist as workspaces are isolated
 
-## Step-by-Step
+### Step-by-Step
 
 TODO
 
-## End-to-end script
+### End-to-end script
 
 To execute the scenario end to end, launch in a terminal the following script: `./scenario-1.sh`. If it succeeds, then you will see the following messages:
 
 ![](img/demo_log.png)
 
-# Scenario 2 : One workspace but 2 physical clusters
+## Scenario 2 : One workspace but 2 physical clusters
 
 Objective: This scenario is an extension of the previous as we continue to use 1 workspace but where we would like to place the deployment on 2 distinct physical clusters. 
 When we will deploy an application, it will be deployed on both clusters as kcp will use the [matching mechanism](https://github.com/kcp-dev/kcp/blob/main/pkg/apis/scheduling/v1alpha1/types_placement.go#L64-L67) to find for a placement,
@@ -131,18 +138,18 @@ spec:
     resource: synctargets
     version: v1alpha1
 ```
-## Step-by-Step
+### Step-by-Step
 TODO
 
-## End-to-end script
+### End-to-end script
 
 TODO
 
-# Scenario 3 : One workspace with additional CRDs (ingress, service)
+## Scenario 3 : One workspace with additional CRDs (ingress, service)
 
 Objective: The purpose of this scenario is to create a workspace, configure kcp to be able to sync additional resources such as: Ingress, Services and finally to deploy a Quarkus application.
 
-## Step-by-Step
+### Step-by-Step
 
 TODO
 
@@ -162,6 +169,16 @@ And next, if you have passed to the script the IP address of the VM running the 
 curl http://quarkus.<IP>.sslip.io/
 ```
 
-## End-to-end script
+### End-to-end script
 
 TODO
+
+# Skupper
+
+## Scenario 1 : Getting started
+
+See: https://skupper.io/start/index.html
+
+### End-to-end script
+
+To execute the scenario using a kind cluster, open a terminal and execute the following script: `./skupper/scenario-1.sh`.
