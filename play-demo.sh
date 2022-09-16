@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright 2021 The KCP Authors.
+# Copyright 2021 The Snowdrop Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
 ###############################################################################
 #
 # play-demo.sh
-#
-# Copyright (c) 2015 Paxton Hare
 #
 # This script lets you script demos in bash. It runs through your demo script when you press
 # ENTER. It simulates typing and runs commands.
