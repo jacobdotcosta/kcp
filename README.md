@@ -174,4 +174,7 @@ See: https://skupper.io/start/index.html
 
 ### End-to-end script
 
-To execute the scenario using a kind cluster, open a terminal and execute the following script: `./skupper/scenario-1.sh`.
+To execute the scenario top of a kind cluster, open a terminal and execute the following script
+where you pass as env var the IP address of your local machine running the cluster:
+
+`HOST_MACHINE=<IP> ./skupper/scenario-1.sh`.
