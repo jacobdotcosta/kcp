@@ -178,3 +178,5 @@ To execute the scenario top of a kind cluster, open a terminal and execute the f
 where you pass as env var the IP address of your local machine running the cluster:
 
 `HOST_MACHINE=<IP> ./skupper/scenario-1.sh`.
+
+**Remark**: The `HOST_NAME` will be used to configure the ingress routes to access the skupper console and frontend. Check the messages logged to the URLs ;-)
