@@ -83,7 +83,7 @@ TODO
 
 To execute the scenario end to end, launch in a terminal the following script: `./scenario-1.sh`. If it succeeds, then you will see the following messages:
 
-![](img/demo_log.png)
+![](img/kcp_demo_log.png)
 
 ## Scenario 2 : One workspace but 2 physical clusters
 
@@ -179,4 +179,6 @@ where you pass as env var the IP address of your local machine running the clust
 
 `HOST_MACHINE=<IP> ./skupper/scenario-1.sh`.
 
-**Remark**: The `HOST_NAME` will be used to configure the ingress routes to access the skupper console and frontend. Check the messages logged to the URLs ;-)
+**Remark**: The `HOST_NAME` will be used to configure the ingress routes to access the `skupper` console and frontend. Check the messages logged to get the URLs ;-)
+
+![](img/skupper-scenario-1.png)
