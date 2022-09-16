@@ -7,13 +7,18 @@ alias k='kubectl'
 
 # Defining some colors for output
 NC='\033[0m' # No Color
-RED='\033[0;31m'
-YELLOW='\033[0;33m'
-GREEN='\033[0;32m'
+COLOR_RESET="\033[0m" # Reset color
+BLACK="\033[0;30m"
 BLUE='\033[0;34m'
-MAGENTA='\033[0;35m'
+BROWN="\033[0;33m"
+GREEN='\033[0;32m'
+GREY="\033[0;90m"
 CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
+RED='\033[0;31m'
+PURPLE="\033[0;35m"
 WHITE='\033[0;37m'
+YELLOW='\033[0;33m'
 
 shopt -s expand_aliases
 alias k='kubectl'
