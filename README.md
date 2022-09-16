@@ -30,9 +30,10 @@ Use the arg `-h` to get the help: `scenario-*.sh -h`.
 
 ## Prerequisite
 
-- kind is installed (if you plan to use a kind k8s cluster)
+- [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) is installed (if you plan to use a kind k8s cluster)
 - A k8s cluster is up and running (e.g `kind create cluster`, ...)
 - [kubectx](https://github.com/ahmetb/kubectx)
+- [helm installed](https://helm.sh/docs/intro/install/) 
 
 ## How to play with kcp
 
