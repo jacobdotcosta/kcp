@@ -169,6 +169,12 @@ TODO
 
 # Skupper
 
+## Prerequisite
+
+- [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) is installed (if you plan to use a kind k8s cluster)
+- [skupper client](https://skupper.io/docs/cli/index.html)
+- [kcp](https://github.com/kcp-dev/kcp#download-kcp)
+
 ## Scenario 1 : Getting started
 
 See: https://skupper.io/start/index.html
