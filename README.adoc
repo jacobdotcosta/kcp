@@ -108,6 +108,7 @@ include::scenario-1.sh[lines=5..10]
 include::scenario-1.sh[]
 ----
 
+include::scenario-1.sh[]
 
 .Scenario 1 successful output
 image::kcp_demo_log.png["Scenario 1 output"]
