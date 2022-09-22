@@ -90,6 +90,25 @@ To execute the scenario end to end, launch in a terminal the following script: `
 include::scenario-1.sh[tag=MovingToTheRoot]
 ----
 
+[source,bash]
+----
+include::scenario-1.sh[tag=MovingToTheRoot]
+----
+
+
+.Moving To The Root
+[source,bash]
+----
+include::scenario-1.sh[lines=5..10]
+----
+
+.Moving To The Root
+[source,bash]
+----
+include::scenario-1.sh[]
+----
+
+
 .Scenario 1 successful output
 image::kcp_demo_log.png["Scenario 1 output"]
 
